@@ -1,8 +1,4 @@
-import { createClient } from '@/utils/supabase/server';
-
-export async function authenticateRequest(request) {
-  const supabase = await createClient();
-
+export async function authenticateRequest(request, supabase) {
   const authHeader = request.headers.get('authorization');
 
   if (!authHeader) {
