@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { makeAuthenticatedRequest } from '@/utils/api';
 
 interface EventFormProps {
   title: string;
@@ -8,18 +9,36 @@ export default function EventForm({ title }: EventFormProps) {
   const [showForm, setShowForm] = useState(false);
   const [eventTitle, setEventTitle] = useState('');
   const [eventDate, setEventDate] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({
-      eventTitle,
-      eventDate
-    });
-    // Add submission logic here
-    setShowForm(false); // Hide form after submission
+    setLoading(true);
+
+    try {
+      const response = await makeAuthenticatedRequest('/api/calendar/insert_event', {
+        method: 'POST',
+        body: JSON.stringify({
+          title: eventTitle,
+          date: eventDate
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to add event');
+      }
+
+      console.log('Event added successfully');
+      setEventTitle('');
+      setEventDate('');
+      setShowForm(false);
+    } catch (error) {
+      console.error('Error adding event:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Card view when form is not shown
   if (!showForm) {
     return (
       <div 
@@ -33,7 +52,6 @@ export default function EventForm({ title }: EventFormProps) {
     );
   }
 
-  // Form view
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
       <div className="flex justify-between items-center mb-6">
@@ -79,12 +97,13 @@ export default function EventForm({ title }: EventFormProps) {
         <div>
           <button 
             type="submit"
+            disabled={loading}
             className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
-            Add Event
+            {loading ? 'Adding...' : 'Add Event'}
           </button>
         </div>
       </form>
     </div>
   );
-} 
+}

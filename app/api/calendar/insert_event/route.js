@@ -7,9 +7,7 @@ import { fetchEvents } from '@/utils/calendar/fetch';
 
 export async function POST(request) {
   const supabase = await createClient();
-
   let { user, error, status } = await authenticateRequest(request, supabase);
-  
   if (error) {
     return Response.json({ error }, { status });
   }
