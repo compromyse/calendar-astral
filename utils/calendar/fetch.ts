@@ -1,6 +1,6 @@
 export async function fetchEvents(supabase, user_id, weekStart) {
   let weekEnd = new Date(weekStart);
-  weekEnd.setDate(weekEnd.getDate() + 7);
+  weekEnd.setDate(weekEnd.getDate() + 6);
 
   const formatDate = (date) => date.toISOString().split('T')[0];
   const { data, error } = await supabase

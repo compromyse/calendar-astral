@@ -1,17 +1,41 @@
-export function groupIntoDays(events) {
+export function groupIntoDays(events, weekStart) {
+  let weekEnd = new Date(weekStart);
+  weekEnd.setDate(weekEnd.getDate() + 6);
+
+  const dateArray = [];
+  let currentDate = new Date(weekStart);
+
+  while (currentDate <= weekEnd) {
+    dateArray.push(new Date(currentDate));
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+
   const grouped = {};
 
   events.forEach((event) => {
-    if (!grouped[event.date]) {
-      grouped[event.date] = {
-        dateKey: event.date,
-        date: new Date(event.date),
-        title: event.date,
+    const eventDate = new Date(event.date);
+    const eventDateKey = eventDate.toISOString().split('T')[0];
+
+    if (!grouped[eventDateKey]) {
+      grouped[eventDateKey] = {
+        dateKey: eventDateKey,
+        date: eventDate.toISOString().split('T')[0],
         events: []
       };
     }
-    grouped[event.date].events.push({ id: event.id, title: event.title });
+
+    grouped[eventDateKey].events.push({ id: event.id, title: event.title });
   });
 
-  return Object.values(grouped);
+  const result = dateArray.map((date) => {
+    const dateKey = date.toISOString().split('T')[0];
+
+    return grouped[dateKey] || {
+      dateKey,
+      date,
+      events: []
+    };
+  });
+
+  return result;
 }

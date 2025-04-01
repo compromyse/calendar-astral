@@ -27,7 +27,7 @@ export default function CalendarPage() {
       if (!response.ok) throw new Error("Failed to fetch data");
 
       const result = await response.json();
-      setCalendarData(groupIntoDays(result.data) || []);
+      setCalendarData(groupIntoDays(result.data, weekStart) || []);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {

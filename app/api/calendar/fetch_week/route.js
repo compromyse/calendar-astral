@@ -17,7 +17,6 @@ export async function GET(request) {
   const weekStartParam = url.searchParams.get('weekStart');
 
   const weekStart = weekStartParam ? new Date(weekStartParam) : new Date();
-
   let { data, err } = await fetchEvents(supabase, user.id, weekStart);
 
   return Response.json({ data });
