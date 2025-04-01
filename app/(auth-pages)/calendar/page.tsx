@@ -22,7 +22,8 @@ export default function CalendarPage() {
 
   const fetchData = async () => {
     try {
-      const response = await makeAuthenticatedRequest("/api/calendar/fetch_week");
+      const weekStart = new Date().toISOString().split('T')[0];
+      const response = await makeAuthenticatedRequest(`/api/calendar/fetch_week?weekStart=${weekStart}`);
       if (!response.ok) throw new Error("Failed to fetch data");
 
       const result = await response.json();

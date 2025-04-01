@@ -2,7 +2,6 @@
 
 import { createClient } from '@/utils/supabase/server';
 import { authenticateRequest } from '@/utils/auth';
-import { insertNewEvent } from '@/utils/calendar/insert';
 import { fetchEvents } from '@/utils/calendar/fetch';
 
 export async function GET(request) {
@@ -14,12 +13,12 @@ export async function GET(request) {
     return Response.json({ error }, { status });
   }
 
-  // let { data, err } = await insertNewEvent(supabase, {
-  //   user_id: user.id,
-  //   title: 'New Event',
-  //   date: '2025-04-01'
-  // });
-  let { data, err } = await fetchEvents(supabase);
+  const url = new URL(request.url);
+  const weekStartParam = url.searchParams.get('weekStart');
+
+  const weekStart = weekStartParam ? new Date(weekStartParam) : new Date();
+
+  let { data, err } = await fetchEvents(supabase, user.id, weekStart);
 
   return Response.json({ data });
 }
