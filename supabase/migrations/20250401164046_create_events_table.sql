@@ -9,7 +9,7 @@ CREATE TABLE events (
 
 ALTER TABLE events ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Users can manage their own events" 
+CREATE POLICY "Users can manage their own events"
 ON events 
 FOR ALL 
 USING (auth.uid() = user_id);
