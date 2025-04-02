@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+
 import { makeAuthenticatedRequest } from '@/utils/api';
 
 interface EventFormProps {

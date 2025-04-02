@@ -65,7 +65,6 @@ export default function SubjectForm({ title }) {
       setNumberOfLessons(1);
       setSelectedDays([]);
       setShowForm(false);
-      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
       console.error('Error adding subject:', err);

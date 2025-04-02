@@ -1,16 +1,13 @@
 export async function insertNewSubject(supabase, user_id, title, lessons, days) {
   const { data, error } = await supabase
-    .from('events')
+    .from('subjects')
     .insert([{
       user_id: user_id,
       title: title,
       lessons: lessons,
-      days: days,
-      subject: true
+      days: days
     }])
     .select();
-
-  debugger
 
   return { data, error };
 }
