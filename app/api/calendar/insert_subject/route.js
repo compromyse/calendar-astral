@@ -2,7 +2,7 @@
 
 import { createClient } from '@/utils/supabase/server';
 import { authenticateRequest } from '@/utils/auth';
-import { insertNewEvent } from '@/utils/calendar/insert_event';
+import { insertNewSubject } from '@/utils/calendar/insert_subject';
 
 export async function POST(request) {
   const supabase = await createClient();
@@ -13,11 +13,7 @@ export async function POST(request) {
 
   const body = await request.json();
 
-  let { data, err } = await insertNewEvent(supabase, {
-    user_id: user.id,
-    title: body.title,
-    date: body.date
-  });
+  let { data, err } = await insertNewSubject(supabase, user.id, body.title, 3, [ 1, 0, 0, 0, 0, 1, 0]);
 
   if (err) {
     return Response.json({ error: err }, { status: 500 });
