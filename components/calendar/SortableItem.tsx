@@ -9,11 +9,12 @@ import { deleteEvent } from "@/utils/calendar/delete_event"
 
 interface ItemProps {
   id: string;
+  date: string;
   content?: string;
   isDragOverlay?: boolean;
 }
 
-export function Item({ id, content, isDragOverlay = false }: ItemProps) {
+export function Item({ id, content, date, isDragOverlay = false }: ItemProps) {
   const [isHovered, setIsHovered] = useState(false);
   
   const itemStyle = {
@@ -51,8 +52,6 @@ export function Item({ id, content, isDragOverlay = false }: ItemProps) {
 
   const handleDeleteClick = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    // TODO: Find a better way of getting the removed date :')
-    const date = e.target.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.children[0].children[0].textContent
     const supabase = await createClient();
     deleteEvent(supabase, id, date)
   };
@@ -77,7 +76,7 @@ export function Item({ id, content, isDragOverlay = false }: ItemProps) {
   );
 }
 
-export default function SortableItem({ id, content }: ItemProps) {
+export default function SortableItem({ id, content, date }: ItemProps) {
   const {
     attributes,
     listeners,
@@ -96,7 +95,7 @@ export default function SortableItem({ id, content }: ItemProps) {
 
   return (
     <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      <Item id={id} content={content} />
+      <Item id={id} content={content} date={date} />
     </div>
   );
 } 

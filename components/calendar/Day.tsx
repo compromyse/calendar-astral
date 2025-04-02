@@ -58,11 +58,12 @@ export default function Day({ id, items, title, getItemContent }: DayProps) {
         strategy={verticalListSortingStrategy}
       >
         <div ref={setNodeRef} style={contentStyle}>
-          {items.map((id) => (
+          {items.map((item_id) => (
             <SortableItem 
-              key={id} 
-              id={id} 
-              content={getItemContent ? getItemContent(id) : undefined} 
+              key={item_id}
+              id={item_id}
+              date={id}
+              content={getItemContent ? getItemContent(item_id) : undefined}
             />
           ))}
         </div>

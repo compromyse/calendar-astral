@@ -34,8 +34,6 @@ export async function deleteEvent(supabase, event_id, date) {
     .eq('id', event.subject_id)
     .select());
 
-  debugger
-
   const events = generateSubjectEvents(data[0]);
 
   ({ data, error } = await supabase
