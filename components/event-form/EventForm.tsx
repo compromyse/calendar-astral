@@ -5,7 +5,7 @@ interface EventFormProps {
   title: string;
 }
 
-export default function EventForm({ title }: EventFormProps) {
+export default function EventForm({ title, refreshData }: EventFormProps) {
   const [showForm, setShowForm] = useState(false);
   const [eventTitle, setEventTitle] = useState('');
   const [eventDate, setEventDate] = useState('');
@@ -28,10 +28,11 @@ export default function EventForm({ title }: EventFormProps) {
         throw new Error('Failed to add event');
       }
 
-      console.log('Event added successfully');
       setEventTitle('');
       setEventDate('');
       setShowForm(false);
+
+      await refreshData();
     } catch (error) {
       console.error('Error adding event:', error);
     } finally {

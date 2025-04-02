@@ -19,6 +19,7 @@ import { groupIntoDays } from "@/utils/calendar/group_into_days";
 export default function CalendarPage() {
   const [calendarData, setCalendarData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [forceRender, setForceRender] = useState(0);
 
   const fetchData = async () => {
     try {
@@ -28,6 +29,8 @@ export default function CalendarPage() {
 
       const result = await response.json();
       setCalendarData(groupIntoDays(result.data, weekStart) || []);
+
+      setForceRender((prev) => prev + 1);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -54,7 +57,7 @@ export default function CalendarPage() {
       <div className="grid grid-cols-1 gap-4">
         <SubjectForm title="Add Subject" />
         <EditSubjectForm title="Edit Subject" />
-        <EventForm title="Add One Off Event" />
+        <EventForm title="Add One Off Event" refreshData={fetchData} />
       </div>
 
       <div className="mt-8">
@@ -62,6 +65,7 @@ export default function CalendarPage() {
           <div className="w-full h-96 flex items-center justify-center">Loading...</div>
         ) : (
           <Calendar
+            key={forceRender}
             calendarDays={calendarData}
             onPrevious={handlePrevious}
             onNext={handleNext}
