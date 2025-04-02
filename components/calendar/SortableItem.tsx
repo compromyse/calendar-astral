@@ -12,9 +12,10 @@ interface ItemProps {
   date: string;
   content?: string;
   isDragOverlay?: boolean;
+  refreshData?: () => void;
 }
 
-export function Item({ id, content, date, isDragOverlay = false }: ItemProps) {
+export function Item({ id, content, date, refreshData, isDragOverlay = false }: ItemProps) {
   const [isHovered, setIsHovered] = useState(false);
   
   const itemStyle = {
@@ -53,7 +54,8 @@ export function Item({ id, content, date, isDragOverlay = false }: ItemProps) {
   const handleDeleteClick = async (e: React.MouseEvent) => {
     e.stopPropagation();
     const supabase = await createClient();
-    deleteEvent(supabase, id, date)
+    await deleteEvent(supabase, id, date);
+    refreshData();
   };
 
   return (
@@ -76,7 +78,7 @@ export function Item({ id, content, date, isDragOverlay = false }: ItemProps) {
   );
 }
 
-export default function SortableItem({ id, content, date }: ItemProps) {
+export default function SortableItem({ id, content, date, refreshData }: ItemProps) {
   const {
     attributes,
     listeners,
@@ -95,7 +97,7 @@ export default function SortableItem({ id, content, date }: ItemProps) {
 
   return (
     <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      <Item id={id} content={content} date={date} />
+      <Item id={id} content={content} date={date} refreshData={refreshData} />
     </div>
   );
 } 

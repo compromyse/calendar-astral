@@ -10,7 +10,7 @@ const DAYS_OF_WEEK = [
   { id: 'friday', label: 'Fri', index: 4 }
 ];
 
-export default function SubjectForm({ title }) {
+export default function SubjectForm({ title, refreshData }) {
   const [showForm, setShowForm] = useState(false);
   const [subjectTitle, setSubjectTitle] = useState('');
   const [numberOfLessons, setNumberOfLessons] = useState(1);
@@ -65,6 +65,8 @@ export default function SubjectForm({ title }) {
       setNumberOfLessons(1);
       setSelectedDays([]);
       setShowForm(false);
+
+      refreshData();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
       console.error('Error adding subject:', err);

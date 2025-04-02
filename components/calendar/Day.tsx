@@ -13,9 +13,10 @@ interface DayProps {
   items: string[];
   title?: string;
   getItemContent?: (id: string) => string | undefined;
+  refreshData?: () => void;
 }
 
-export default function Day({ id, items, title, getItemContent }: DayProps) {
+export default function Day({ id, items, title, refreshData, getItemContent }: DayProps) {
   const { setNodeRef } = useDroppable({
     id
   });
@@ -63,6 +64,7 @@ export default function Day({ id, items, title, getItemContent }: DayProps) {
               key={item_id}
               id={item_id}
               date={id}
+              refreshData={refreshData}
               content={getItemContent ? getItemContent(item_id) : undefined}
             />
           ))}

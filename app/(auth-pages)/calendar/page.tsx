@@ -55,7 +55,7 @@ export default function CalendarPage() {
   return (
     <div className="container mx-auto py-8">
       <div className="grid grid-cols-1 gap-4">
-        <SubjectForm title="Add Subject" />
+        <SubjectForm title="Add Subject" refreshData={fetchData} />
         <EditSubjectForm title="Edit Subject" />
         <EventForm title="Add One Off Event" refreshData={fetchData} />
       </div>
@@ -69,6 +69,7 @@ export default function CalendarPage() {
             calendarDays={calendarData}
             onPrevious={handlePrevious}
             onNext={handleNext}
+            refreshData={fetchData}
             title="Calendar"
           />
         )}

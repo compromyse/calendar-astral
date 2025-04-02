@@ -31,6 +31,7 @@ interface CalendarProps {
   calendarDays: CalendarDay[];
   onPrevious?: () => void;
   onNext?: () => void;
+  refreshData?: () => void;
   title?: string;
 }
 
@@ -46,7 +47,7 @@ const wrapperStyle = {
   boxShadow: "0 2px 10px rgba(0, 0, 0, 0.05)"
 };
 
-export default function Calendar({ calendarDays, onPrevious, onNext, title = "Calendar" }: CalendarProps) {
+export default function Calendar({ calendarDays, onPrevious, onNext, refreshData, title = "Calendar" }: CalendarProps) {
   // State to track event positions across days
   const [days, setDays] = useState(() => {
     const initialDays: { [key: string]: string[] } = {};
@@ -221,6 +222,7 @@ export default function Calendar({ calendarDays, onPrevious, onNext, title = "Ca
               items={days.dayContainers[dateKey]} 
               title={getDayTitle(dateKey)}
               getItemContent={getEventContent}
+              refreshData={refreshData}
             />
           ))}
           
