@@ -14,8 +14,8 @@ export async function insertNewSubject(supabase, user_id, title, lessons, days) 
     }])
     .select();
 
-  const subject_id = data[0].id;
-  const events = generateSubjectEvents(subject_id, user_id, title, lessons, days, startingDate);
+  const subject = data[0];
+  const events = generateSubjectEvents(subject);
 
   const { dat, err } = await supabase
     .from('events')

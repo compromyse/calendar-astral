@@ -1,25 +1,24 @@
-export function generateSubjectEvents(
-  subject_id: string,
-  user_id: string,
-  title: string,
-  numberOfLessons: number,
-  days: number[],
-  startDate: Date
-) {
-  const currentDate = new Date(startDate);
-  
-  const lessons = [];
+export function generateSubjectEvents(subject) {
+  const currentDate = new Date(subject.startDate);
+  const skippedDays = new Set(subject.skippedDays);
+
+  const events = [];
   let lessonCount = 0;
 
-  while (lessonCount < numberOfLessons) {
+  while (lessonCount < subject.numberOfLessons) {
+    const formattedDate = currentDate.toISOString().split("T")[0];
     const dayOfWeek = currentDate.getDay() - 1;
-    
-    if (dayOfWeek >= 0 && dayOfWeek < 5 && days[dayOfWeek] === 1) {
-      lessons.push({
-        subject_id: subject_id,
-        user_id: user_id,
-        title: `${title} - ${lessonCount + 1}`,
-        date: new Date(currentDate)
+
+    if (
+      dayOfWeek >= 0 && dayOfWeek < 5 && 
+      days[dayOfWeek] === 1 && 
+      !skippedDays.has(formattedDate)
+    ) {
+      events.push({
+        subject_id: subject.id,
+        user_id: subject.user_id,
+        title: `${subject.title} - ${lessonCount + 1}`,
+        date: formattedDate
       });
 
       lessonCount++;
@@ -27,6 +26,6 @@ export function generateSubjectEvents(
     
     currentDate.setDate(currentDate.getDate() + 1);
   }
-  
-  return lessons;
+
+  return events;
 }

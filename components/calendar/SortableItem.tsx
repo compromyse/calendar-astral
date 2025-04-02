@@ -4,6 +4,9 @@ import React, { useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
+import { createClient } from "@/utils/supabase/client";
+import { deleteEvent } from "@/utils/calendar/delete_event"
+
 interface ItemProps {
   id: string;
   content?: string;
@@ -46,10 +49,12 @@ export function Item({ id, content, isDragOverlay = false }: ItemProps) {
     visibility: isDragOverlay ? "hidden" as const : "visible" as const,
   };
 
-  const handleDeleteClick = (e: React.MouseEvent) => {
+  const handleDeleteClick = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    debugger
-    console.log(`Delete clicked for event ${id}`);
+    // TODO: Find a better way of getting the removed date :')
+    const date = e.target.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.children[0].children[0].textContent
+    const supabase = await createClient();
+    deleteEvent(supabase, id, date)
   };
 
   return (
