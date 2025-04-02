@@ -12,8 +12,8 @@ export async function POST(request) {
   }
 
   const body = await request.json();
-
-  let { data, err } = await insertNewSubject(supabase, user.id, body.title, 3, [ 1, 0, 0, 0, 0, 1, 0]);
+  const { title, numberOfLessons, weeklySchedule } = body;
+  let { data, err } = await insertNewSubject(supabase, user.id, title, numberOfLessons, weeklySchedule);
 
   if (err) {
     return Response.json({ error: err }, { status: 500 });

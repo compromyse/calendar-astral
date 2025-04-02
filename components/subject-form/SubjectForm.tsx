@@ -1,22 +1,22 @@
 import React, { useState } from 'react';
 
-interface SubjectFormProps {
-  title: string;
-}
+import { makeAuthenticatedRequest } from '@/utils/api';
 
 const DAYS_OF_WEEK = [
-  { id: 'monday', label: 'Mon' },
-  { id: 'tuesday', label: 'Tue' },
-  { id: 'wednesday', label: 'Wed' },
-  { id: 'thursday', label: 'Thu' },
-  { id: 'friday', label: 'Fri' },
+  { id: 'monday', label: 'Mon', index: 0 },
+  { id: 'tuesday', label: 'Tue', index: 1 },
+  { id: 'wednesday', label: 'Wed', index: 2 },
+  { id: 'thursday', label: 'Thu', index: 3 },
+  { id: 'friday', label: 'Fri', index: 4 }
 ];
 
-export default function SubjectForm({ title }: SubjectFormProps) {
+export default function SubjectForm({ title }) {
   const [showForm, setShowForm] = useState(false);
   const [subjectTitle, setSubjectTitle] = useState('');
   const [numberOfLessons, setNumberOfLessons] = useState(1);
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleDayToggle = (dayId: string) => {
     setSelectedDays(prev => 
@@ -26,15 +26,52 @@ export default function SubjectForm({ title }: SubjectFormProps) {
     );
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({
-      subjectTitle,
-      numberOfLessons,
-      selectedDays
-    });
-    // Add submission logic here
-    setShowForm(false); // Hide form after submission
+    setIsSubmitting(true);
+    setError(null);
+
+    try {
+      // [Monday, Tuesday, Wednesday, Thursday, Friday]
+      const weeklySchedule = [0, 0, 0, 0, 0];
+
+      selectedDays.forEach(day => {
+        const dayIndex = DAYS_OF_WEEK.find(d => d.id === day)?.index;
+        if (dayIndex !== undefined) {
+          weeklySchedule[dayIndex] = 1;
+        }
+      });
+
+      const response = await makeAuthenticatedRequest('/api/calendar/insert_subject', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: subjectTitle,
+          numberOfLessons: numberOfLessons,
+          weeklySchedule: weeklySchedule
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to add subject');
+      }
+
+      // Reset form
+      setSubjectTitle('');
+      setNumberOfLessons(1);
+      setSelectedDays([]);
+      setShowForm(false);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+      console.error('Error adding subject:', err);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // Card view when form is not shown
@@ -63,8 +100,14 @@ export default function SubjectForm({ title }: SubjectFormProps) {
           ✕
         </button>
       </div>
-      
+
       <form onSubmit={handleSubmit} className="space-y-6">
+        {error && (
+          <div className="p-3 bg-red-100 text-red-700 rounded-md">
+            {error}
+          </div>
+        )}
+        
         <div>
           <label htmlFor="subject-title" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Subject Title
@@ -99,7 +142,7 @@ export default function SubjectForm({ title }: SubjectFormProps) {
           <p className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
             Days of Week
           </p>
-          <div className="flex space-x-4">
+          <div className="flex flex-wrap gap-2">
             {DAYS_OF_WEEK.map((day) => (
               <div key={day.id} className="flex items-center">
                 <button
@@ -122,12 +165,18 @@ export default function SubjectForm({ title }: SubjectFormProps) {
         <div>
           <button 
             type="submit"
-            className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            disabled={isSubmitting}
+            className={`
+              w-full py-2 px-4 text-white font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+              ${isSubmitting
+                ? 'bg-blue-400 cursor-not-allowed'
+                : 'bg-blue-600 hover:bg-blue-700'}
+            `}
           >
-            Add Subject
+            {isSubmitting ? 'Adding...' : 'Add Subject'}
           </button>
         </div>
       </form>
     </div>
   );
-} 
+}
