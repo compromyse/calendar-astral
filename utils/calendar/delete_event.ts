@@ -36,10 +36,17 @@ export async function deleteEvent(supabase, event_id, date) {
 
   const events = generateSubjectEvents(data[0]);
 
+  const { err } = await supabase
+    .from('events')
+    .delete()
+    .eq('subject_id', data[0].id);
+
   ({ data, error } = await supabase
     .from('events')
     .insert(events)
     .select());
+
+  console.log('deleted');
 
   return true;
 }

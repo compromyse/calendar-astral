@@ -1,17 +1,17 @@
 export function generateSubjectEvents(subject) {
-  const currentDate = new Date(subject.startDate);
-  const skippedDays = new Set(subject.skippedDays);
+  const currentDate = new Date(subject.starting_date);
+  const skippedDays = new Set(subject.skipped_days);
 
   const events = [];
   let lessonCount = 0;
 
-  while (lessonCount < subject.numberOfLessons) {
+  while (lessonCount < subject.lessons) {
     const formattedDate = currentDate.toISOString().split("T")[0];
     const dayOfWeek = currentDate.getDay() - 1;
 
     if (
       dayOfWeek >= 0 && dayOfWeek < 5 && 
-      days[dayOfWeek] === 1 && 
+      subject.days[dayOfWeek] === 1 && 
       !skippedDays.has(formattedDate)
     ) {
       events.push({
