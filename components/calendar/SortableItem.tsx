@@ -48,7 +48,7 @@ export function Item({ id, content, isDragOverlay = false }: ItemProps) {
 
   const handleDeleteClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    // This doesn't need to do anything right now per requirements
+    debugger
     console.log(`Delete clicked for event ${id}`);
   };
 
@@ -61,7 +61,7 @@ export function Item({ id, content, isDragOverlay = false }: ItemProps) {
       <div>
         {content || `Event ${id}`}
       </div>
-      <div style={deleteIconStyle} onClick={handleDeleteClick}>
+      <div style={deleteIconStyle} onPointerDown={(e) => e.stopPropagation()} onClick={handleDeleteClick}>
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M3 6h18"></path>
           <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
