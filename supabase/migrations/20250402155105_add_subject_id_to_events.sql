@@ -1,0 +1,1 @@
+ALTER TABLE events ADD COLUMN subject_id UUID REFERENCES subjects(id) ON DELETE CASCADE;

@@ -1,4 +1,5 @@
 export function generateSubjectEvents(
+  subject_id: string,
   user_id: string,
   title: string,
   numberOfLessons: number,
@@ -15,6 +16,7 @@ export function generateSubjectEvents(
     
     if (dayOfWeek >= 0 && dayOfWeek < 5 && days[dayOfWeek] === 1) {
       lessons.push({
+        subject_id: subject_id,
         user_id: user_id,
         title: `${title} - ${lessonCount + 1}`,
         date: new Date(currentDate)
