@@ -21,15 +21,23 @@ export default function CalendarPage() {
   const [loading, setLoading] = useState(true);
   const [forceRender, setForceRender] = useState(0);
 
+  const getLastMonday = (date = new Date()) => {
+    const day = date.getDay();
+    const diff = day === 0 ? -6 : 1 - day; // Adjust for Sunday being 0
+    const lastMonday = new Date(date);
+    lastMonday.setDate(lastMonday.getDate() + diff);
+    return lastMonday;
+  };
+
+  const [weekStart, setWeekStart] = useState(getLastMonday());
+
   const fetchData = async () => {
     try {
-      const weekStart = new Date().toISOString().split('T')[0];
       const response = await makeAuthenticatedRequest(`/api/calendar/fetch_week?weekStart=${weekStart}`);
       if (!response.ok) throw new Error("Failed to fetch data");
 
       const result = await response.json();
       setCalendarData(groupIntoDays(result.data, weekStart) || []);
-
       setForceRender((prev) => prev + 1);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -40,16 +48,20 @@ export default function CalendarPage() {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [weekStart]); // Re-fetch when weekStart changes
 
   const handlePrevious = () => {
-    console.log("Navigate to previous week");
-    // Add logic for fetching previous week's data
+    const previousWeek = new Date(weekStart);
+    previousWeek.setDate(previousWeek.getDate() - 7);
+    const newWeekStart = previousWeek.toISOString().split('T')[0];
+    setWeekStart(newWeekStart); // Update state
   };
 
   const handleNext = () => {
-    console.log("Navigate to next week");
-    // Add logic for fetching next week's data
+    const nextWeek = new Date(weekStart);
+    nextWeek.setDate(nextWeek.getDate() + 7);
+    const newWeekStart = nextWeek.toISOString().split('T')[0];
+    setWeekStart(newWeekStart); // Update state
   };
 
   return (
