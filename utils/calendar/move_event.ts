@@ -15,7 +15,7 @@ export async function moveEvent(
     .single();
 
   if (error || !data) {
-    return { error: error?.message ?? 'Event not found' };
+    return { error: error ? error.message : 'Event not found' };
   }
 
   if (data.subject_id !== null) {

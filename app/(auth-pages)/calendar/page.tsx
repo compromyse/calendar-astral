@@ -55,15 +55,15 @@ export default function CalendarPage() {
   const handlePrevious = () => {
     const previousWeek = new Date(weekStart);
     previousWeek.setDate(previousWeek.getDate() - 7);
-    const newWeekStart = previousWeek.toISOString().split('T')[0];
-    setWeekStart(newWeekStart); // Update state
+    const newWeekStart = previousWeek.toDateString();
+    setWeekStart(newWeekStart);
   };
 
   const handleNext = () => {
     const nextWeek = new Date(weekStart);
     nextWeek.setDate(nextWeek.getDate() + 7);
-    const newWeekStart = nextWeek.toISOString().split('T')[0];
-    setWeekStart(newWeekStart); // Update state
+    const newWeekStart = nextWeek.toDateString();
+    setWeekStart(newWeekStart);
   };
 
   return (

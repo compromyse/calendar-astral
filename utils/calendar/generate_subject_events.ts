@@ -8,7 +8,7 @@ function isValidLessonDay(
   subject: Subject,
   days: number[] = subject.days
 ): boolean {
-  const formattedDate = date.toISOString().split("T")[0];
+  const formattedDate = date.toDateString();
   const dayOfWeek = date.getDay() - 1;
   const skippedDays = new Set(subject.skipped_days || []);
 
@@ -48,7 +48,7 @@ export function generateSubjectEvents(
         subject_id: subject.id,
         user_id: subject.user_id,
         title: `${subject.title} - ${lessonCount + 1}`,
-        date: currentDate.toISOString().split("T")[0],
+        date: currentDate.toDateString(),
       });
       lessonCount++;
     }

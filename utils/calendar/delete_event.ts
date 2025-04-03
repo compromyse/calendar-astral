@@ -61,7 +61,7 @@ export async function deleteEvent(
     .from("events")
     .delete()
     .eq("subject_id", updatedData.id)
-    .gte("date", new Date().toISOString().split("T")[0]);
+    .gte("date", new Date().toDateString());
 
   if (deleteSubjectEventsError) {
     return { error: deleteSubjectEventsError.message };

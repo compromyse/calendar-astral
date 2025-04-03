@@ -12,7 +12,7 @@ export async function insertNewSubject(
   lessons: number,
   days: number[]
 ): Promise<{ data: Tables<'subjects'> | null; error: any }> {
-  const startingDate = new Date().toISOString().split('T')[0];
+  const startingDate = new Date().toDateString();
 
   const newSubject: SubjectInsert = {
     user_id,

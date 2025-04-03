@@ -27,7 +27,7 @@ export function groupIntoDays(events: Event[], weekStart: Date): GroupedDay[] {
 
   events.forEach((event) => {
     const eventDate = new Date(event.date);
-    const eventDateKey = eventDate.toISOString().split('T')[0];
+    const eventDateKey = eventDate.toDateString();
 
     if (!grouped[eventDateKey]) {
       grouped[eventDateKey] = {
@@ -45,7 +45,7 @@ export function groupIntoDays(events: Event[], weekStart: Date): GroupedDay[] {
   });
 
   return dateArray.map((date) => {
-    const dateKey = date.toISOString().split('T')[0];
+    const dateKey = date.toDateString();
 
     return grouped[dateKey] || {
       dateKey,
