@@ -1,22 +1,24 @@
 import { SupabaseClient } from '@supabase/supabase-js';
+import { Tables } from '@/database.types';
 
 export async function moveEvent(
   supabase: SupabaseClient,
-  user_id: number,
-  event_id: number,
+  user_id: string,
+  event_id: string,
   new_date: string
 ): Promise<{ error: string | null }> {
   const { data, error } = await supabase
     .from('events')
     .select('subject_id')
     .eq('id', event_id)
-    .eq('user_id', user_id);
+    .eq('user_id', user_id)
+    .single();
 
-  if (error || !data || data.length === 0) {
-    return { error: error ? error.message : 'Event not found' };
+  if (error || !data) {
+    return { error: error?.message ?? 'Event not found' };
   }
 
-  if (data[0].subject_id) {
+  if (data.subject_id !== null) {
     return { error: 'Cannot move a subject event' };
   }
 

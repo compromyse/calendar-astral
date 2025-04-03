@@ -1,8 +1,9 @@
 import { SupabaseClient } from '@supabase/supabase-js';
 import { generateSubjectEvents } from '@/utils/calendar/generate_subject_events';
+import { TablesUpdate, Tables } from '@/database.types';
 
 interface Subject {
-  id: number;
+  id: string;
   user_id: string;
   title: string;
   lessons: number;
@@ -24,24 +25,34 @@ export async function updateSubject(
 ): Promise<{ error: string | null }> {
   const { data: originalData, error: fetchError } = await supabase
     .from('subjects')
-    .select('*')
-    .eq('id', subject.id);
+    .select('days')
+    .eq('id', subject.id)
+    .eq('user_id', user_id)
+    .single();
 
-  if (fetchError || !originalData || originalData.length === 0) {
-    return { error: fetchError ? fetchError.message || 'Subject not found' };
+  if (fetchError || !originalData) {
+    return { error: fetchError?.message ?? 'Subject not found' };
   }
 
-  const originalDays = originalData[0].days;
+  const originalDays = originalData.days;
+
+  const updatedSubject: Partial<TablesUpdate<'subjects'>> = {
+    title: subject.title,
+    lessons: subject.lessons,
+    days: subject.days,
+    starting_date: subject.starting_date,
+  };
 
   const { data: updatedData, error: updateError } = await supabase
     .from('subjects')
-    .update(subject)
+    .update(updatedSubject)
     .eq('id', subject.id)
     .eq('user_id', user_id)
-    .select();
+    .select()
+    .single();
 
-  if (updateError || !updatedData || updatedData.length === 0) {
-    return { error: updateError };
+  if (updateError || !updatedData) {
+    return { error: updateError?.message ?? 'Failed to update subject' };
   }
 
   const { error: deleteError } = await supabase
@@ -55,9 +66,9 @@ export async function updateSubject(
     return { error: deleteError.message };
   }
 
-  const events: Event[] = generateSubjectEvents(updatedData[0], originalDays);
+  const events: Event[] = generateSubjectEvents(updatedData, originalDays);
 
   const { error: insertError } = await supabase.from('events').insert(events);
 
-  return { error: insertError };
+  return { error: insertError?.message ?? null };
 }

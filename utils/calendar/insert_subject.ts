@@ -1,21 +1,9 @@
 import { SupabaseClient } from '@supabase/supabase-js';
 import { generateSubjectEvents } from '@/utils/calendar/generate_subject_events';
+import { TablesInsert, Tables } from '@/database.types';
 
-interface Subject {
-  id: number;
-  user_id: string;
-  title: string;
-  lessons: number;
-  days: number[];
-  starting_date: string; // Format: YYYY-MM-DD
-}
-
-interface Event {
-  subject_id: string;
-  user_id: string;
-  title: string;
-  date: string; // Format: YYYY-MM-DD
-}
+type SubjectInsert = TablesInsert<'subjects'>;
+type EventInsert = TablesInsert<'events'>;
 
 export async function insertNewSubject(
   supabase: SupabaseClient,
@@ -23,30 +11,30 @@ export async function insertNewSubject(
   title: string,
   lessons: number,
   days: number[]
-): Promise<{ data: Subject | null; error: any }> {
+): Promise<{ data: Tables<'subjects'> | null; error: any }> {
   const startingDate = new Date().toISOString().split('T')[0];
+
+  const newSubject: SubjectInsert = {
+    user_id,
+    title,
+    lessons,
+    days,
+    starting_date: startingDate,
+  };
 
   const { data, error } = await supabase
     .from('subjects')
-    .insert([
-      {
-        user_id,
-        title,
-        lessons,
-        days,
-        starting_date: startingDate,
-      },
-    ])
+    .insert([newSubject])
     .select();
 
   if (error || !data || data.length === 0) {
     return { data: null, error };
   }
 
-  const subject: Subject = data[0];
-  const events: Event[] = generateSubjectEvents(subject);
+  const subject = data[0];
+  const events: EventInsert[] = generateSubjectEvents(subject);
 
   const { error: eventError } = await supabase.from('events').insert(events);
 
-  return { data, error: eventError };
+  return { data: subject, error: eventError };
 }

@@ -1,13 +1,14 @@
-import { SupabaseClient } from '@supabase/supabase-js';
+import { Tables } from "@/lib/database.types";
+import { SupabaseClient } from "@supabase/supabase-js";
 
 export async function fetchSubjects(
   supabase: SupabaseClient,
-  user_id: string
-): Promise<{ data: any[] | null; error: any }> {
+  userId: string
+): Promise<{ data: Tables<"subjects">[] | null; err: string | null }> {
   const { data, error } = await supabase
-    .from('subjects')
-    .select('*')
-    .eq('user_id', user_id);
+    .from("subjects")
+    .select("*")
+    .eq("user_id", userId);
 
-  return { data, error };
+  return { data, error: error ? error.message : null };
 }
