@@ -39,7 +39,8 @@ export async function deleteEvent(supabase, event_id, date) {
   const { err } = await supabase
     .from('events')
     .delete()
-    .eq('subject_id', data[0].id);
+    .eq('subject_id', data[0].id)
+    .gte('date', new Date().toISOString().split('T')[0]);
 
   ({ data, error } = await supabase
     .from('events')
