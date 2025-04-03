@@ -22,10 +22,13 @@ export default function EditSubjectForm({ title, refreshData }: EditSubjectFormP
   const [numberOfLessons, setNumberOfLessons] = useState(1);
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
   const [subjects, setSubjects] = useState<{ id: string; title: string }[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (showForm) {
       const fetchSubjects = async () => {
+        setIsLoading(true);
+
         try {
           const response = await makeAuthenticatedRequest('/api/calendar/fetch_subjects');
           const data = await response.json();
@@ -35,6 +38,8 @@ export default function EditSubjectForm({ title, refreshData }: EditSubjectFormP
           setSubjects(data.data || []);
         } catch (error) {
           console.error("Error fetching subjects:", error);
+        } finally {
+          setIsLoading(false);
         }
       };
 
@@ -127,6 +132,10 @@ export default function EditSubjectForm({ title, refreshData }: EditSubjectFormP
         >
           ✕
         </button>
+      </div>
+
+      <div className={`absolute inset-0 bg-black/20 flex items-center justify-center rounded-lg z-10 ${isLoading ? 'block' : 'hidden'}`}>
+        <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
       </div>
       
       <form onSubmit={handleSubmit} className="space-y-6">
