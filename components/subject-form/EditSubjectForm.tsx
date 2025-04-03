@@ -69,14 +69,34 @@ export default function EditSubjectForm({ title }: EditSubjectFormProps) {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({
-      selectedSubjectId,
-      subjectTitle,
-      numberOfLessons,
-      selectedDays
-    });
+
+    const DAYS_MAPPING = ["monday", "tuesday", "wednesday", "thursday", "friday"];
+    const formattedDays = DAYS_MAPPING.map(day => selectedDays.includes(day) ? 1 : 0);
+
+    try {
+      const response = await makeAuthenticatedRequest("/api/calendar/update_subject", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          subject_id: selectedSubjectId,
+          title: subjectTitle,
+          numberOfLessons,
+          selectedDays: formattedDays
+        })
+      });
+
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Failed to update subject");
+
+      console.log("Subject updated successfully!", result.data);
+    } catch (error) {
+      console.error("Error updating subject:", error);
+    }
+
     setShowForm(false);
   };
 
