@@ -1,33 +1,63 @@
+import { SupabaseClient } from '@supabase/supabase-js';
 import { generateSubjectEvents } from '@/utils/calendar/generate_subject_events';
 
-export async function updateSubject(supabase, user_id, subject) {
-  let { data, error } = await supabase
+interface Subject {
+  id: number;
+  user_id: string;
+  title: string;
+  lessons: number;
+  days: number[];
+  starting_date: string;
+}
+
+interface Event {
+  subject_id: string;
+  user_id: string;
+  title: string;
+  date: string;
+}
+
+export async function updateSubject(
+  supabase: SupabaseClient,
+  user_id: string,
+  subject: Subject
+): Promise<{ error: string | null }> {
+  const { data: originalData, error: fetchError } = await supabase
     .from('subjects')
     .select('*')
     .eq('id', subject.id);
 
-  let originalDays = data[0].days;
+  if (fetchError || !originalData || originalData.length === 0) {
+    return { error: fetchError || 'Subject not found' };
+  }
 
-  ({ data, error } = await supabase
+  const originalDays = originalData[0].days;
+
+  const { data: updatedData, error: updateError } = await supabase
     .from('subjects')
     .update(subject)
     .eq('id', subject.id)
     .eq('user_id', user_id)
-    .select());
+    .select();
 
-  ({ error } = await supabase
+  if (updateError || !updatedData || updatedData.length === 0) {
+    return { error: updateError };
+  }
+
+  const { error: deleteError } = await supabase
     .from('events')
     .delete()
     .eq('subject_id', subject.id)
     .eq('user_id', user_id)
-    .gte('date', new Date().toISOString().split('T')[0]));
+    .gte('date', new Date().toISOString().split('T')[0]);
 
-  const events = generateSubjectEvents(data[0], originalDays);
+  if (deleteError) {
+    return { error: deleteError.message };
+  }
 
-  ({ data, error } = await supabase
-    .from('events')
-    .insert(events)
-    .select());
+  const events: Event[] = generateSubjectEvents(updatedData[0], originalDays);
 
-  return { error };
+  const { error: insertError } = await supabase.from('events').insert(events);
+
+  return { error: insertError };
 }

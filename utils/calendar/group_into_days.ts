@@ -1,8 +1,21 @@
-export function groupIntoDays(events, weekStart) {
-  let weekEnd = new Date(weekStart);
+interface Event {
+  id: string;
+  title: string;
+  subject_id: string;
+  date: string;
+}
+
+interface GroupedDay {
+  dateKey: string;
+  date: string;
+  events: Pick<Event, 'id' | 'title' | 'subject_id'>[];
+}
+
+export function groupIntoDays(events: Event[], weekStart: Date): GroupedDay[] {
+  const weekEnd = new Date(weekStart);
   weekEnd.setDate(weekEnd.getDate() + 6);
 
-  const dateArray = [];
+  const dateArray: Date[] = [];
   let currentDate = new Date(weekStart);
 
   while (currentDate <= weekEnd) {
@@ -10,7 +23,7 @@ export function groupIntoDays(events, weekStart) {
     currentDate.setDate(currentDate.getDate() + 1);
   }
 
-  const grouped = {};
+  const grouped: Record<string, GroupedDay> = {};
 
   events.forEach((event) => {
     const eventDate = new Date(event.date);
@@ -19,23 +32,25 @@ export function groupIntoDays(events, weekStart) {
     if (!grouped[eventDateKey]) {
       grouped[eventDateKey] = {
         dateKey: eventDateKey,
-        date: eventDate.toISOString().split('T')[0],
-        events: []
+        date: eventDateKey,
+        events: [],
       };
     }
 
-    grouped[eventDateKey].events.push({ id: event.id, title: event.title, subject_id: event.subject_id });
+    grouped[eventDateKey].events.push({
+      id: event.id,
+      title: event.title,
+      subject_id: event.subject_id,
+    });
   });
 
-  const result = dateArray.map((date) => {
+  return dateArray.map((date) => {
     const dateKey = date.toISOString().split('T')[0];
 
     return grouped[dateKey] || {
       dateKey,
-      date,
-      events: []
+      date: dateKey,
+      events: [],
     };
   });
-
-  return result;
 }

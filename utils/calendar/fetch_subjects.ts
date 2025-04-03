@@ -1,4 +1,9 @@
-export async function fetchSubjects(supabase, user_id) {
+import { SupabaseClient } from '@supabase/supabase-js';
+
+export async function fetchSubjects(
+  supabase: SupabaseClient,
+  user_id: string
+): Promise<{ data: any[] | null; error: any }> {
   const { data, error } = await supabase
     .from('subjects')
     .select('*')

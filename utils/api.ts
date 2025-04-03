@@ -1,11 +1,15 @@
 import { createClient } from '@/utils/supabase/client'
 
-export const makeAuthenticatedRequest = async (url: String, options = {}) => {
+export const makeAuthenticatedRequest = async (url: string, options = {}): Promise<Response> => {
   const supabase = createClient();
 
   const { data } = await supabase.auth.getSession();
   
-  const accessToken = data.session.access_token;
+  if (!data.session) {
+    throw new Error('No active session found.');
+  }
+
+  const accessToken: string = data.session.access_token;
   const headers = {
     ...options.headers,
     'Authorization': `Bearer ${accessToken}`,

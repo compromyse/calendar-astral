@@ -1,8 +1,15 @@
-export async function fetchEvents(supabase, user_id, weekStart) {
-  let weekEnd = new Date(weekStart);
+import { SupabaseClient } from '@supabase/supabase-js';
+
+export async function fetchEvents(
+  supabase: SupabaseClient,
+  user_id: string,
+  weekStart: Date
+): Promise<{ data: any[] | null; error: any }> {
+  const weekEnd = new Date(weekStart);
   weekEnd.setDate(weekEnd.getDate() + 6);
 
-  const formatDate = (date) => date.toISOString().split('T')[0];
+  const formatDate = (date: Date): string => date.toISOString().split('T')[0];
+
   const { data, error } = await supabase
     .from('events')
     .select('*')
