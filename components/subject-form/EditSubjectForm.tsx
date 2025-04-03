@@ -1,18 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+
+import { makeAuthenticatedRequest } from "@/utils/api";
 
 interface EditSubjectFormProps {
   title: string;
 }
-
-// Sample subjects for the dropdown
-// In a real application, these would come from an API or props
-const SAMPLE_SUBJECTS = [
-  { id: '1', title: 'Mathematics' },
-  { id: '2', title: 'Physics' },
-  { id: '3', title: 'Literature' },
-  { id: '4', title: 'Computer Science' },
-  { id: '5', title: 'History' }
-];
 
 const DAYS_OF_WEEK = [
   { id: 'monday', label: 'Mon' },
@@ -28,11 +20,29 @@ export default function EditSubjectForm({ title }: EditSubjectFormProps) {
   const [subjectTitle, setSubjectTitle] = useState('');
   const [numberOfLessons, setNumberOfLessons] = useState(1);
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
+  const [subjects, setSubjects] = useState<{ id: string; title: string }[]>([]);
+
+  useEffect(() => {
+    const fetchSubjects = async () => {
+      try {
+        const response = await makeAuthenticatedRequest('/api/calendar/fetch_subjects');
+        const data = await response.json();
+        
+        if (data.error) throw new Error(data.error);
+        
+        setSubjects(data.data || []);
+      } catch (error) {
+        console.error("Error fetching subjects:", error);
+      }
+    };
+
+    fetchSubjects();
+  }, []);
 
   const handleDayToggle = (dayId: string) => {
-    setSelectedDays(prev => 
-      prev.includes(dayId) 
-        ? prev.filter(id => id !== dayId) 
+    setSelectedDays(prev =>
+      prev.includes(dayId)
+        ? prev.filter(id => id !== dayId)
         : [...prev, dayId]
     );
   };
@@ -40,17 +50,21 @@ export default function EditSubjectForm({ title }: EditSubjectFormProps) {
   const handleSubjectSelection = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const subjectId = e.target.value;
     setSelectedSubjectId(subjectId);
-    
+
     if (subjectId) {
-      // Find the selected subject
-      const subject = SAMPLE_SUBJECTS.find(s => s.id === subjectId);
+      const subject = subjects.find(s => s.id === subjectId);
       if (subject) {
-        // Pre-fill the subject title field
         setSubjectTitle(subject.title);
-        // In a real app, you might also pre-fill other fields based on the selected subject
+        setNumberOfLessons(subject.lessons);
+
+        const dayMapping = ["monday", "tuesday", "wednesday", "thursday", "friday"];
+        const selectedDaysArray = subject.days
+          .map((val: number, index: number) => (val === 1 ? dayMapping[index] : null))
+          .filter(Boolean) as string[];
+
+        setSelectedDays(selectedDaysArray);
       }
     } else {
-      // Reset form if "Select a subject" is chosen
       setSubjectTitle('');
     }
   };
@@ -63,11 +77,9 @@ export default function EditSubjectForm({ title }: EditSubjectFormProps) {
       numberOfLessons,
       selectedDays
     });
-    // Add submission logic here
-    setShowForm(false); // Hide form after submission
+    setShowForm(false);
   };
 
-  // Card view when form is not shown
   if (!showForm) {
     return (
       <div 
@@ -81,7 +93,6 @@ export default function EditSubjectForm({ title }: EditSubjectFormProps) {
     );
   }
 
-  // Form view
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
       <div className="flex justify-between items-center mb-6">
@@ -107,7 +118,7 @@ export default function EditSubjectForm({ title }: EditSubjectFormProps) {
             required
           >
             <option value="">Select a subject</option>
-            {SAMPLE_SUBJECTS.map(subject => (
+            {subjects.map(subject => (
               <option key={subject.id} value={subject.id}>
                 {subject.title}
               </option>
@@ -180,4 +191,4 @@ export default function EditSubjectForm({ title }: EditSubjectFormProps) {
       </form>
     </div>
   );
-} 
+}
