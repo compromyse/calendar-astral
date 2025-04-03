@@ -1,4 +1,4 @@
-function isValidLessonDay(date, subject) {
+function isValidLessonDay(date, subject, days = subject.days) {
   const formattedDate = date.toISOString().split("T")[0];
   const dayOfWeek = date.getDay() - 1;
   const skippedDays = new Set(subject.skipped_days || []);
@@ -6,12 +6,12 @@ function isValidLessonDay(date, subject) {
   return (
     dayOfWeek >= 0 &&
     dayOfWeek < 5 &&
-    subject.days[dayOfWeek] === 1 &&
+    days[dayOfWeek] === 1 &&
     !skippedDays.has(formattedDate)
   );
 }
 
-export function generateSubjectEvents(subject) {
+export function generateSubjectEvents(subject, originalDays = subject.days) {
   const today = new Date();
   const startDate = new Date(subject.starting_date);
 
@@ -20,7 +20,7 @@ export function generateSubjectEvents(subject) {
   if (startDate < today) {
     let checkDate = new Date(startDate);
     while (checkDate < today) {
-      if (isValidLessonDay(checkDate, subject)) {
+      if (isValidLessonDay(checkDate, subject, originalDays)) {
         lessonCount++;
       }
       checkDate.setDate(checkDate.getDate() + 1);
