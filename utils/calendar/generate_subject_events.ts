@@ -1,7 +1,12 @@
 export function generateSubjectEvents(subject) {
+  const today = new Date();
   const currentDate = new Date(subject.starting_date);
-  const skippedDays = new Set(subject.skipped_days);
 
+  if (currentDate < today) {
+    currentDate.setDate(today.getDate());
+  }
+
+  const skippedDays = new Set(subject.skipped_days);
   const events = [];
   let lessonCount = 0;
 
@@ -10,8 +15,8 @@ export function generateSubjectEvents(subject) {
     const dayOfWeek = currentDate.getDay() - 1;
 
     if (
-      dayOfWeek >= 0 && dayOfWeek < 5 && 
-      subject.days[dayOfWeek] === 1 && 
+      dayOfWeek >= 0 && dayOfWeek < 5 &&
+      subject.days[dayOfWeek] === 1 &&
       !skippedDays.has(formattedDate)
     ) {
       events.push({
@@ -23,7 +28,7 @@ export function generateSubjectEvents(subject) {
 
       lessonCount++;
     }
-    
+
     currentDate.setDate(currentDate.getDate() + 1);
   }
 
