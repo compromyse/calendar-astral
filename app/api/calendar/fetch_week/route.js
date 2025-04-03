@@ -19,5 +19,9 @@ export async function GET(request) {
   const weekStart = weekStartParam ? new Date(weekStartParam) : new Date();
   let { data, err } = await fetchEvents(supabase, user.id, weekStart);
 
+  if (err) {
+    return Response.json({ err }, { status: 500 });
+  }
+
   return Response.json({ data });
 }

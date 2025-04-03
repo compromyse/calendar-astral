@@ -16,5 +16,9 @@ export async function GET(request) {
   const url = new URL(request.url);
   let { data, err } = await fetchSubjects(supabase, user.id);
 
+  if (err) {
+    return Response.json({ err }, { status: 500 });
+  }
+
   return Response.json({ data });
 }

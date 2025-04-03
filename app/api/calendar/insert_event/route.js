@@ -13,7 +13,7 @@ export async function POST(request) {
 
   const body = await request.json();
 
-  let { data, err } = await insertNewEvent(supabase, {
+  const { data, err } = await insertNewEvent(supabase, {
     user_id: user.id,
     title: body.title,
     date: body.date
