@@ -47,7 +47,8 @@ const wrapperStyle = {
   padding: "16px",
   background: "hsl(var(--background))",
   borderRadius: "12px",
-  boxShadow: "0 2px 10px rgba(0, 0, 0, 0.05)"
+  boxShadow: "0 2px 10px rgba(0, 0, 0, 0.05)",
+  position: "relative" as const
 };
 
 export default function Calendar({ calendarDays, onPrevious, onNext, refreshData, title = "Calendar" }: CalendarProps) {
