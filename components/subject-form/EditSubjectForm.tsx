@@ -4,6 +4,7 @@ import { makeAuthenticatedRequest } from "@/utils/api";
 
 interface EditSubjectFormProps {
   title: string;
+  refreshData?: () => void;
 }
 
 const DAYS_OF_WEEK = [
@@ -14,7 +15,7 @@ const DAYS_OF_WEEK = [
   { id: 'friday', label: 'Fri' },
 ];
 
-export default function EditSubjectForm({ title }: EditSubjectFormProps) {
+export default function EditSubjectForm({ title, refreshData }: EditSubjectFormProps) {
   const [showForm, setShowForm] = useState(false);
   const [selectedSubjectId, setSelectedSubjectId] = useState('');
   const [subjectTitle, setSubjectTitle] = useState('');
@@ -23,21 +24,23 @@ export default function EditSubjectForm({ title }: EditSubjectFormProps) {
   const [subjects, setSubjects] = useState<{ id: string; title: string }[]>([]);
 
   useEffect(() => {
-    const fetchSubjects = async () => {
-      try {
-        const response = await makeAuthenticatedRequest('/api/calendar/fetch_subjects');
-        const data = await response.json();
-        
-        if (data.error) throw new Error(data.error);
-        
-        setSubjects(data.data || []);
-      } catch (error) {
-        console.error("Error fetching subjects:", error);
-      }
-    };
+    if (showForm) {
+      const fetchSubjects = async () => {
+        try {
+          const response = await makeAuthenticatedRequest('/api/calendar/fetch_subjects');
+          const data = await response.json();
 
-    fetchSubjects();
-  }, []);
+          if (data.error) throw new Error(data.error);
+
+          setSubjects(data.data || []);
+        } catch (error) {
+          console.error("Error fetching subjects:", error);
+        }
+      };
+
+      fetchSubjects();
+    }
+  }, [showForm]);
 
   const handleDayToggle = (dayId: string) => {
     setSelectedDays(prev =>
@@ -92,6 +95,7 @@ export default function EditSubjectForm({ title }: EditSubjectFormProps) {
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || "Failed to update subject");
 
+      refreshData();
       console.log("Subject updated successfully!", result.data);
     } catch (error) {
       console.error("Error updating subject:", error);

@@ -68,7 +68,7 @@ export default function CalendarPage() {
     <div className="container mx-auto py-8">
       <div className="grid grid-cols-1 gap-4">
         <SubjectForm title="Add Subject" refreshData={fetchData} />
-        <EditSubjectForm title="Edit Subject" />
+        <EditSubjectForm title="Edit Subject" refreshData={fetchData} />
         <EventForm title="Add One Off Event" refreshData={fetchData} />
       </div>
 
