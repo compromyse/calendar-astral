@@ -1,9 +1,9 @@
 export function generateSubjectEvents(subject) {
   const today = new Date();
-  const currentDate = new Date(subject.starting_date);
+  let currentDate = new Date(subject.starting_date);
 
   if (currentDate < today) {
-    currentDate.setDate(today.getDate());
+    currentDate = new Date(today);
   }
 
   const skippedDays = new Set(subject.skipped_days);
