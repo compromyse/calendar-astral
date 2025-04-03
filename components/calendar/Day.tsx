@@ -11,12 +11,14 @@ import SortableItem from "./SortableItem";
 interface DayProps {
   id: string;
   items: string[];
+  isSubjectEvent: boolean;
   title?: string;
   getItemContent?: (id: string) => string | undefined;
+  eventIsSubjectEvent?: (id: string) => boolean | undefined;
   refreshData?: () => void;
 }
 
-export default function Day({ id, items, title, refreshData, getItemContent }: DayProps) {
+export default function Day({ id, items, title, refreshData, getItemContent, eventIsSubjectEvent }: DayProps) {
   const { setNodeRef } = useDroppable({
     id
   });
@@ -66,6 +68,7 @@ export default function Day({ id, items, title, refreshData, getItemContent }: D
               date={id}
               refreshData={refreshData}
               content={getItemContent ? getItemContent(item_id) : undefined}
+              isSubjectEvent={eventIsSubjectEvent(item_id)}
             />
           ))}
         </div>

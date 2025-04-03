@@ -66,7 +66,7 @@ export default function Calendar({ calendarDays, onPrevious, onNext, refreshData
       initialDays[day.dateKey] = day.events.map(event => event.id);
       dates[day.dateKey] = day.date;
       titles[day.dateKey] = day.title;
-      
+
       // Store event details for lookup
       day.events.forEach(event => {
         events[event.id] = event;
@@ -93,6 +93,10 @@ export default function Calendar({ calendarDays, onPrevious, onNext, refreshData
   // Get event content by ID
   const getEventContent = (id: string) => {
     return days.allEvents[id]?.title;
+  };
+
+  const eventIsSubjectEvent = (id: string) => {
+    return days.allEvents[id]?.subject_id !== null;
   };
 
   // Helper function to find which container an item belongs to
@@ -248,6 +252,7 @@ export default function Calendar({ calendarDays, onPrevious, onNext, refreshData
               items={days.dayContainers[dateKey]} 
               title={getDayTitle(dateKey)}
               getItemContent={getEventContent}
+              eventIsSubjectEvent={eventIsSubjectEvent}
               refreshData={refreshData}
             />
           ))}

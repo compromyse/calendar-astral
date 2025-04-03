@@ -24,7 +24,7 @@ export function groupIntoDays(events, weekStart) {
       };
     }
 
-    grouped[eventDateKey].events.push({ id: event.id, title: event.title });
+    grouped[eventDateKey].events.push({ id: event.id, title: event.title, subject_id: event.subject_id });
   });
 
   const result = dateArray.map((date) => {

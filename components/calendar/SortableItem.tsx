@@ -10,12 +10,13 @@ import { deleteEvent } from "@/utils/calendar/delete_event"
 interface ItemProps {
   id: string;
   date: string;
+  isSubjectEvent?: boolean,
   content?: string;
   isDragOverlay?: boolean;
   refreshData?: () => void;
 }
 
-export function Item({ id, content, date, refreshData, isDragOverlay = false }: ItemProps) {
+export function Item({ id, content, date, refreshData, isSubjectEvent = false, isDragOverlay = false }: ItemProps) {
   const [isHovered, setIsHovered] = useState(false);
   
   const itemStyle = {
@@ -23,7 +24,6 @@ export function Item({ id, content, date, refreshData, isDragOverlay = false }: 
     margin: "8px 0",
     backgroundColor: "hsl(var(--primary) / 0.1)",
     borderRadius: "6px",
-    cursor: "pointer",
     border: "1px solid hsl(var(--primary) / 0.2)",
     color: "hsl(var(--primary))",
     fontWeight: "medium",
@@ -34,7 +34,8 @@ export function Item({ id, content, date, refreshData, isDragOverlay = false }: 
     justifyContent: "space-between",
     transition: "all 0.2s ease",
     boxShadow: "0 1px 2px rgba(0, 0, 0, 0.05)",
-    position: "relative" as const
+    position: "relative" as const,
+    cursor: isSubjectEvent ? 'not-allowed' : 'pointer'
   };
 
   const deleteIconStyle = {
@@ -78,7 +79,7 @@ export function Item({ id, content, date, refreshData, isDragOverlay = false }: 
   );
 }
 
-export default function SortableItem({ id, content, date, refreshData }: ItemProps) {
+export default function SortableItem({ id, content, date, refreshData, isSubjectEvent = false }: ItemProps) {
   const {
     attributes,
     listeners,
@@ -86,7 +87,7 @@ export default function SortableItem({ id, content, date, refreshData }: ItemPro
     transform,
     transition,
     isDragging
-  } = useSortable({ id });
+  } = useSortable({ id, disabled: isSubjectEvent });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -97,7 +98,7 @@ export default function SortableItem({ id, content, date, refreshData }: ItemPro
 
   return (
     <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      <Item id={id} content={content} date={date} refreshData={refreshData} />
+      <Item id={id} content={content} date={date} refreshData={refreshData} isSubjectEvent={isSubjectEvent} />
     </div>
   );
 } 
