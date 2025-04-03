@@ -4,10 +4,10 @@ import { createClient } from '@/utils/supabase/server';
 import { authenticateRequest } from '@/utils/auth';
 import { fetchEvents } from '@/utils/calendar/fetch_events';
 
-export async function GET(request) {
+export async function GET(request: Request): Promise<Response> {
   const supabase = await createClient();
 
-  let { user, error, status } = await authenticateRequest(request, supabase);
+  const { user, error, status } = await authenticateRequest(request, supabase);
   
   if (error) {
     return Response.json({ error }, { status });
@@ -17,10 +17,11 @@ export async function GET(request) {
   const weekStartParam = url.searchParams.get('weekStart');
 
   const weekStart = weekStartParam ? new Date(weekStartParam) : new Date();
-  let { data, err } = await fetchEvents(supabase, user.id, weekStart);
+  
+  const { data, error: fetchError } = await fetchEvents(supabase, user.id, weekStart);
 
-  if (err) {
-    return Response.json({ err }, { status: 500 });
+  if (fetchError) {
+    return Response.json({ error: fetchError }, { status: 500 });
   }
 
   return Response.json({ data });

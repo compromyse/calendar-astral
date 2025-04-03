@@ -2,8 +2,8 @@ import { SupabaseClient } from '@supabase/supabase-js';
 
 export async function moveEvent(
   supabase: SupabaseClient,
-  user_id: string,
-  event_id: string,
+  user_id: number,
+  event_id: number,
   new_date: string
 ): Promise<{ error: string | null }> {
   const { data, error } = await supabase
@@ -13,7 +13,7 @@ export async function moveEvent(
     .eq('user_id', user_id);
 
   if (error || !data || data.length === 0) {
-    return { error || 'Event not found' };
+    return { error: error ? error.message : 'Event not found' };
   }
 
   if (data[0].subject_id) {
@@ -26,5 +26,5 @@ export async function moveEvent(
     .eq('id', event_id)
     .eq('user_id', user_id);
 
-  return { error: updateError };
+  return { error: updateError ? updateError.message : null };
 }

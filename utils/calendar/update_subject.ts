@@ -28,7 +28,7 @@ export async function updateSubject(
     .eq('id', subject.id);
 
   if (fetchError || !originalData || originalData.length === 0) {
-    return { error: fetchError || 'Subject not found' };
+    return { error: fetchError ? fetchError.message || 'Subject not found' };
   }
 
   const originalDays = originalData[0].days;

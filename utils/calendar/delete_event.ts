@@ -8,7 +8,7 @@ export async function deleteEvent(supabase: SupabaseClient, event_id: string, da
     .eq('id', event_id);
 
   if (error || !data || data.length === 0) {
-    return { error: error || 'Event not found' };
+    return { error: error ? error.message : 'Event not found' };
   }
 
   const event = data[0];
@@ -32,7 +32,7 @@ export async function deleteEvent(supabase: SupabaseClient, event_id: string, da
     .eq('id', event.subject_id));
 
   if (error || !data || data.length === 0) {
-    return { error: error || 'Subject not found' };
+    return { error: error ? error.message : 'Subject not found' };
   }
 
   const subject = data[0];
@@ -46,7 +46,7 @@ export async function deleteEvent(supabase: SupabaseClient, event_id: string, da
     .select());
 
   if (error) {
-    return { error: error || 'Failed to update subject' };
+    return { error: error ? error.message : 'Failed to update subject' };
   }
 
   const events = generateSubjectEvents(data[0]);
