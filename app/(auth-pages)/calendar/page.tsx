@@ -32,6 +32,8 @@ export default function CalendarPage() {
   const [weekStart, setWeekStart] = useState(getLastMonday());
 
   const fetchData = async () => {
+    setLoading(true);
+
     try {
       const response = await makeAuthenticatedRequest(`/api/calendar/fetch_week?weekStart=${weekStart}`);
       if (!response.ok) throw new Error("Failed to fetch data");
