@@ -8,14 +8,14 @@ export async function updateSubject(supabase, user_id, subject) {
     .eq('user_id', user_id)
     .select();
 
-  const events = generateSubjectEvents(data[0]);
-
   ({ error } = await supabase
     .from('events')
     .delete()
     .eq('subject_id', subject.id)
     .eq('user_id', user_id)
     .gte('date', new Date().toISOString().split('T')[0]));
+
+  const events = generateSubjectEvents(data[0]);
 
   ({ data, error } = await supabase
     .from('events')
