@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useState } from "react";
 import {
   DndContext,
@@ -50,6 +51,8 @@ const wrapperStyle = {
 };
 
 export default function Calendar({ calendarDays, onPrevious, onNext, refreshData, title = "Calendar" }: CalendarProps) {
+  const [isLoading, setIsLoading] = useState(false);
+
   // State to track event positions across days
   const [days, setDays] = useState(() => {
     const initialDays: { [key: string]: string[] } = {};
@@ -194,16 +197,23 @@ export default function Calendar({ calendarDays, onPrevious, onNext, refreshData
           [overContainer]: arrayMove(prev.dayContainers[overContainer], activeIndex, overIndex)
         }
       }));
-    }
-    
 
-    const response = await makeAuthenticatedRequest('/api/calendar/move_event', {
-      method: 'POST',
-      body: JSON.stringify({
-        event_id: id,
-        new_date: overContainer
-      })
-    });
+    }
+
+    setIsLoading(true);
+    try {
+      await makeAuthenticatedRequest('/api/calendar/move_event', {
+        method: 'POST',
+        body: JSON.stringify({
+          event_id: id,
+          new_date: overContainer
+        })
+      });
+    } catch (error) {
+      console.error('Error moving event:', error);
+    } finally {
+      setIsLoading(false);
+    }
 
     setActiveId(null);
   }
@@ -219,6 +229,10 @@ export default function Calendar({ calendarDays, onPrevious, onNext, refreshData
         )}
       </div>
       <div style={wrapperStyle}>
+        <div className={`absolute inset-0 bg-black/20 flex items-center justify-center rounded-lg z-10 ${isLoading ? 'block' : 'hidden'}`}>
+          <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+
         <DndContext
           sensors={sensors}
           collisionDetection={closestCorners}
@@ -244,4 +258,4 @@ export default function Calendar({ calendarDays, onPrevious, onNext, refreshData
       </div>
     </div>
   );
-} 
+}
