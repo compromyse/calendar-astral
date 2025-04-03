@@ -15,6 +15,8 @@ import Day from "./Day";
 import { Item } from "./SortableItem";
 import NavigationArrows from "./NavigationArrows";
 
+import { makeAuthenticatedRequest } from '@/utils/api';
+
 interface CalendarEvent {
   id: string;
   title: string;
@@ -155,7 +157,7 @@ export default function Calendar({ calendarDays, onPrevious, onNext, refreshData
     });
   }
 
-  function handleDragEnd(event: any) {
+  async function handleDragEnd(event: any) {
     const { active, over } = event;
     
     if (!over) {
@@ -193,6 +195,15 @@ export default function Calendar({ calendarDays, onPrevious, onNext, refreshData
         }
       }));
     }
+    
+
+    const response = await makeAuthenticatedRequest('/api/calendar/move_event', {
+      method: 'POST',
+      body: JSON.stringify({
+        event_id: id,
+        new_date: overContainer
+      })
+    });
 
     setActiveId(null);
   }
