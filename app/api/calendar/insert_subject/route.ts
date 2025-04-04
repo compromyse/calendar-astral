@@ -2,7 +2,7 @@
 
 import { createClient } from '@/utils/supabase/server';
 import { authenticateRequest } from '@/utils/auth';
-import { insertNewSubject } from '@/utils/calendar/insert_subject';
+import { insertNewSubject } from '@/utils/calendar/subjects/insert_subject';
 
 export async function POST(request: Request): Promise<Response> {
   const supabase = await createClient();

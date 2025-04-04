@@ -13,11 +13,14 @@ const Calendar = dynamic(() => import("@/components/calendar/Calendar"), {
 import SubjectForm from "@/components/subject-form/SubjectForm";
 import EventForm from "@/components/event-form/EventForm";
 import EditSubjectForm from "@/components/subject-form/EditSubjectForm";
+
 import { makeAuthenticatedRequest } from "@/utils/api";
 import { groupIntoDays } from "@/utils/calendar/group_into_days";
 
+import { * } from '@/utils/calendar/interfaces'
+
 export default function CalendarPage() {
-  const [calendarData, setCalendarData] = useState([]);
+  const [calendarData, setCalendarData] = useState<GroupedDay[]>([]);
   const [loading, setLoading] = useState(true);
   const [forceRender, setForceRender] = useState(0);
 
@@ -55,14 +58,14 @@ export default function CalendarPage() {
   const handlePrevious = () => {
     const previousWeek = new Date(weekStart);
     previousWeek.setDate(previousWeek.getDate() - 7);
-    const newWeekStart = previousWeek.toDateString();
+    const newWeekStart = previousWeek;
     setWeekStart(newWeekStart);
   };
 
   const handleNext = () => {
     const nextWeek = new Date(weekStart);
     nextWeek.setDate(nextWeek.getDate() + 7);
-    const newWeekStart = nextWeek.toDateString();
+    const newWeekStart = nextWeek;
     setWeekStart(newWeekStart);
   };
 

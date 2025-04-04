@@ -4,6 +4,7 @@ import { makeAuthenticatedRequest } from '@/utils/api';
 
 interface EventFormProps {
   title: string;
+  refreshData?: () => void;
 }
 
 export default function EventForm({ title, refreshData }: EventFormProps) {

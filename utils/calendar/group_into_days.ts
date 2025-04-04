@@ -1,15 +1,4 @@
-interface Event {
-  id: string;
-  title: string;
-  subject_id: string;
-  date: string;
-}
-
-interface GroupedDay {
-  dateKey: string;
-  date: string;
-  events: Pick<Event, 'id' | 'title' | 'subject_id'>[];
-}
+import { * } from '@/utils/calendar/interfaces'
 
 export function groupIntoDays(events: Event[], weekStart: Date): GroupedDay[] {
   const weekEnd = new Date(weekStart);

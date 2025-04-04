@@ -2,7 +2,7 @@
 
 import { createClient } from '@/utils/supabase/server';
 import { authenticateRequest } from '@/utils/auth';
-import { fetchSubjects } from '@/utils/calendar/fetch_subjects';
+import { fetchSubjects } from '@/utils/calendar/subjects/fetch_subjects';
 
 export async function GET(request: Request): Promise<Response> {
   const supabase = await createClient();

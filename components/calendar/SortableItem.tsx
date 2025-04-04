@@ -5,7 +5,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
 import { createClient } from "@/utils/supabase/client";
-import { deleteEvent } from "@/utils/calendar/delete_event"
+import { deleteEvent } from "@/utils/calendar/events/delete_event"
 
 interface ItemProps {
   id: string;
