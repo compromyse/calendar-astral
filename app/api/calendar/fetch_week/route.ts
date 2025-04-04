@@ -11,6 +11,8 @@ export async function GET(request: Request): Promise<Response> {
   
   if (error) {
     return Response.json({ error }, { status });
+  } else if (!user) {
+    throw new Error("User is null");
   }
 
   const url = new URL(request.url);

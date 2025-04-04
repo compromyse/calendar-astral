@@ -17,10 +17,10 @@ import EditSubjectForm from "@/components/subject-form/EditSubjectForm";
 import { makeAuthenticatedRequest } from "@/utils/api";
 import { groupIntoDays } from "@/utils/calendar/group_into_days";
 
-import { * } from '@/utils/calendar/interfaces'
+import { CalendarDay } from '@/utils/calendar/interfaces'
 
 export default function CalendarPage() {
-  const [calendarData, setCalendarData] = useState<GroupedDay[]>([]);
+  const [calendarData, setCalendarData] = useState<CalendarDay[]>([]);
   const [loading, setLoading] = useState(true);
   const [forceRender, setForceRender] = useState(0);
 

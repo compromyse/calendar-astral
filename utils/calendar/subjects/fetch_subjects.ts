@@ -4,7 +4,7 @@ import { SupabaseClient } from "@supabase/supabase-js";
 export async function fetchSubjects(
   supabase: SupabaseClient,
   userId: string
-): Promise<{ data: Tables<"subjects">[] | null; err: string | null }> {
+): Promise<{ data: Tables<"subjects">[] | null; error: string | null }> {
   const { data, error } = await supabase
     .from("subjects")
     .select("*")

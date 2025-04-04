@@ -18,23 +18,13 @@ import NavigationArrows from "./NavigationArrows";
 
 import { makeAuthenticatedRequest } from '@/utils/api';
 
-interface CalendarEvent {
-  id: string;
-  title: string;
-}
-
-interface CalendarDay {
-  dateKey: string;
-  date: Date;
-  title: string;
-  events: CalendarEvent[];
-}
+import { CalendarDay } from '@/utils/calendar/interfaces'
 
 interface CalendarProps {
   calendarDays: CalendarDay[];
   onPrevious?: () => void;
   onNext?: () => void;
-  refreshData?: () => void;
+  refreshData: () => void;
   title?: string;
 }
 
@@ -57,14 +47,15 @@ export default function Calendar({ calendarDays, onPrevious, onNext, refreshData
   // State to track event positions across days
   const [days, setDays] = useState(() => {
     const initialDays: { [key: string]: string[] } = {};
-    const events: { [key: string]: CalendarEvent } = {};
+    // TODO: Fix this type
+    const events: { [key: string]: any } = {};
     const dates: { [key: string]: Date } = {};
     const titles: { [key: string]: string } = {};
     
     // Initialize days and events from calendarDays
     calendarDays.forEach(day => {
       initialDays[day.dateKey] = day.events.map(event => event.id);
-      dates[day.dateKey] = day.date;
+      dates[day.dateKey] = new Date(day.date);
       titles[day.dateKey] = day.title;
 
       // Store event details for lookup
@@ -256,10 +247,6 @@ export default function Calendar({ calendarDays, onPrevious, onNext, refreshData
               refreshData={refreshData}
             />
           ))}
-          
-          <DragOverlay>
-            {activeId ? <Item id={activeId} content={activeEvent?.title} isDragOverlay={true} /> : null}
-          </DragOverlay>
         </DndContext>
       </div>
     </div>

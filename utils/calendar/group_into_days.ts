@@ -1,6 +1,6 @@
-import { * } from '@/utils/calendar/interfaces'
+import { CalendarDay, Event } from '@/utils/calendar/interfaces'
 
-export function groupIntoDays(events: Event[], weekStart: Date): GroupedDay[] {
+export function groupIntoDays(events: Event[], weekStart: Date): CalendarDay[] {
   const weekEnd = new Date(weekStart);
   weekEnd.setDate(weekEnd.getDate() + 6);
 
@@ -12,9 +12,11 @@ export function groupIntoDays(events: Event[], weekStart: Date): GroupedDay[] {
     currentDate.setDate(currentDate.getDate() + 1);
   }
 
-  const grouped: Record<string, GroupedDay> = {};
+  const grouped: Record<string, CalendarDay> = {};
 
   events.forEach((event) => {
+    if (!event.date) return;
+
     const eventDate = new Date(event.date);
     const eventDateKey = eventDate.toDateString();
 
@@ -23,6 +25,7 @@ export function groupIntoDays(events: Event[], weekStart: Date): GroupedDay[] {
         dateKey: eventDateKey,
         date: eventDateKey,
         events: [],
+        title: ""
       };
     }
 

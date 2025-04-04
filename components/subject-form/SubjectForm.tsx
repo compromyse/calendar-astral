@@ -2,6 +2,11 @@ import React, { useState } from 'react';
 
 import { makeAuthenticatedRequest } from '@/utils/api';
 
+interface SubjectFormProps {
+  title: string;
+  refreshData: () => void;
+}
+
 const DAYS_OF_WEEK = [
   { id: 'monday', label: 'Mon', index: 0 },
   { id: 'tuesday', label: 'Tue', index: 1 },
@@ -10,7 +15,7 @@ const DAYS_OF_WEEK = [
   { id: 'friday', label: 'Fri', index: 4 }
 ];
 
-export default function SubjectForm({ title, refreshData }) {
+export default function SubjectForm({ title, refreshData }: SubjectFormProps) {
   const [showForm, setShowForm] = useState(false);
   const [subjectTitle, setSubjectTitle] = useState('');
   const [numberOfLessons, setNumberOfLessons] = useState(1);

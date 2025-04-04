@@ -11,11 +11,10 @@ import SortableItem from "./SortableItem";
 interface DayProps {
   id: string;
   items: string[];
-  isSubjectEvent: boolean;
   title?: string;
   getItemContent?: (id: string) => string | undefined;
-  eventIsSubjectEvent?: (id: string) => boolean | undefined;
-  refreshData?: () => void;
+  eventIsSubjectEvent: (id: string) => boolean | undefined;
+  refreshData: () => void;
 }
 
 export default function Day({ id, items, title, refreshData, getItemContent, eventIsSubjectEvent }: DayProps) {

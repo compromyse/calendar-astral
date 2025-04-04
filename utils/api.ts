@@ -1,6 +1,6 @@
 import { createClient } from '@/utils/supabase/client'
 
-export const makeAuthenticatedRequest = async (url: string, options = {}): Promise<Response> => {
+export const makeAuthenticatedRequest = async (url: string, options: RequestInit = {}): Promise<Response> => {
   const supabase = createClient();
 
   const { data } = await supabase.auth.getSession();

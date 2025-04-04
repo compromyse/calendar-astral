@@ -13,7 +13,7 @@ interface ItemProps {
   isSubjectEvent?: boolean,
   content?: string;
   isDragOverlay?: boolean;
-  refreshData?: () => void;
+  refreshData: () => void;
 }
 
 export function Item({ id, content, date, refreshData, isSubjectEvent = false, isDragOverlay = false }: ItemProps) {

@@ -1,5 +1,5 @@
 import { SupabaseClient } from '@supabase/supabase-js';
-import { TablesInsert } from '@/database.types';
+import { TablesInsert } from '@/lib/database.types';
 
 type EventInsert = TablesInsert<'events'>;
 

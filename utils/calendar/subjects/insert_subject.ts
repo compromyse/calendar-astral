@@ -1,6 +1,6 @@
 import { SupabaseClient } from '@supabase/supabase-js';
 import { generateSubjectEvents } from '@/utils/calendar/generate_subject_events';
-import { TablesInsert, Tables } from '@/database.types';
+import { TablesInsert, Tables } from '@/lib/database.types';
 
 type SubjectInsert = TablesInsert<'subjects'>;
 type EventInsert = TablesInsert<'events'>;

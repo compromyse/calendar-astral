@@ -1,27 +1,13 @@
 import { SupabaseClient } from '@supabase/supabase-js';
 import { generateSubjectEvents } from '@/utils/calendar/generate_subject_events';
-import { TablesUpdate, Tables } from '@/database.types';
+import { TablesUpdate, Tables } from '@/lib/database.types';
 
-interface Subject {
-  id: string;
-  user_id: string;
-  title: string;
-  lessons: number;
-  days: number[];
-  starting_date: string;
-}
-
-interface Event {
-  subject_id: string;
-  user_id: string;
-  title: string;
-  date: string;
-}
+import { Subject, Event } from '@/utils/calendar/interfaces'
 
 export async function updateSubject(
   supabase: SupabaseClient,
   user_id: string,
-  subject: Subject
+  subject: Partial<Subject>
 ): Promise<{ error: string | null }> {
   const updatedSubject: Partial<TablesUpdate<'subjects'>> = {
     title: subject.title,
@@ -61,7 +47,7 @@ export async function updateSubject(
   const { error: updatePastError } = await supabase
     .from("events")
     .upsert(updates, {
-      onConflict: ["id"]
+      onConflict: "id"
     });
 
   if (updatePastError) {

@@ -1,5 +1,5 @@
 import { SupabaseClient } from '@supabase/supabase-js';
-import { Tables } from '@/database.types';
+import { Tables } from '@/lib/database.types';
 
 export async function moveEvent(
   supabase: SupabaseClient,

@@ -1,7 +1,4 @@
-import { Tables } from "@/lib/database.types";
-
-type Subject = Tables<"subjects">;
-type Event = Tables<"events">;
+import { Subject, Event } from '@/utils/calendar/interfaces'
 
 function isValidLessonDay(
   date: Date,
@@ -32,12 +29,14 @@ export function generateSubjectEvents(
 
   while (lessonCount < (subject.lessons || 0)) {
     if (isValidLessonDay(currentDate, subject)) {
-      events.push({
+      let event: Partial<Event> = {
         subject_id: subject.id,
         user_id: subject.user_id,
         title: `${subject.title} - ${lessonCount + 1}`,
         date: currentDate.toDateString(),
-      });
+      };
+
+      events.push(event as Event);
       lessonCount++;
     }
     currentDate.setDate(currentDate.getDate() + 1);

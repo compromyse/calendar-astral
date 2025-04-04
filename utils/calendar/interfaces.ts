@@ -1,13 +1,13 @@
-interface Event {
-  id: string;
-  title: string;
-  subject_id: string;
-  date: string;
-}
+import { Tables } from "@/lib/database.types";
 
-interface GroupedDay {
+type Event = Tables<"events">;
+type Subject = Tables<"subjects">;
+
+interface CalendarDay {
   dateKey: string;
   date: string;
+  title: string;
   events: Pick<Event, 'id' | 'title' | 'subject_id'>[];
 }
 
+export type { Event, CalendarDay, Subject  }

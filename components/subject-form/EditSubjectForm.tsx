@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 
+import { Subject } from '@/utils/calendar/interfaces'
 import { makeAuthenticatedRequest } from "@/utils/api";
 
 interface EditSubjectFormProps {
   title: string;
-  refreshData?: () => void;
+  refreshData: () => void;
 }
 
 const DAYS_OF_WEEK = [
@@ -21,7 +22,7 @@ export default function EditSubjectForm({ title, refreshData }: EditSubjectFormP
   const [subjectTitle, setSubjectTitle] = useState('');
   const [numberOfLessons, setNumberOfLessons] = useState(1);
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
-  const [subjects, setSubjects] = useState<{ id: string; title: string }[]>([]);
+  const [subjects, setSubjects] = useState<Partial<Subject>[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -62,11 +63,11 @@ export default function EditSubjectForm({ title, refreshData }: EditSubjectFormP
     if (subjectId) {
       const subject = subjects.find(s => s.id === subjectId);
       if (subject) {
-        setSubjectTitle(subject.title);
-        setNumberOfLessons(subject.lessons);
+        setSubjectTitle(subject.title ?? subject.id ?? "");
+        setNumberOfLessons(subject.lessons ?? 0);
 
         const dayMapping = ["monday", "tuesday", "wednesday", "thursday", "friday"];
-        const selectedDaysArray = subject.days
+        const selectedDaysArray = (subject.days ?? [])
           .map((val: number, index: number) => (val === 1 ? dayMapping[index] : null))
           .filter(Boolean) as string[];
 

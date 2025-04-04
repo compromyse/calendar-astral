@@ -1,18 +1,27 @@
-import { SupabaseClient } from '@supabase/supabase-js';
+import { SupabaseClient, User } from '@supabase/supabase-js';
 
-export async function authenticateRequest(request: Request, supabase: SupabaseClient) {
-  const authHeader: string = request.headers.get('authorization');
+type AuthResponse = {
+  user: User | null;
+  error: string | null;
+  status: number;
+};
+
+export async function authenticateRequest(
+  request: Request,
+  supabase: SupabaseClient
+): Promise<AuthResponse> {
+  const authHeader = request.headers.get('authorization');
 
   if (!authHeader) {
-    return { error: 'Missing authorization header', status: 401 };
+    return { user: null, error: 'Missing authorization header', status: 401 };
   }
 
-  const token: string = authHeader.split(' ')[1];
+  const token = authHeader.split(' ')[1];
   const { data, error } = await supabase.auth.getUser(token);
 
   if (error || !data?.user) {
-    return { error: 'Unauthorized', status: 401 };
+    return { user: null, error: 'Unauthorized', status: 401 };
   }
 
-  return { user: data.user };
+  return { user: data.user, error: null, status: 200 };
 }
