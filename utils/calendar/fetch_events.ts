@@ -16,7 +16,8 @@ export async function fetchEvents(
     .select("*")
     .eq("user_id", user_id)
     .gte("date", formatDate(weekStart))
-    .lte("date", formatDate(weekEnd));
+    .lte("date", formatDate(weekEnd))
+    .order("order_index", { ascending: true });
 
   return { data: data as Tables<"events">[] | null, error: error ? error.message : null };
 }
