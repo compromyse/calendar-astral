@@ -23,19 +23,6 @@ export async function updateSubject(
   user_id: string,
   subject: Subject
 ): Promise<{ error: string | null }> {
-  const { data: originalData, error: fetchError } = await supabase
-    .from('subjects')
-    .select('days')
-    .eq('id', subject.id)
-    .eq('user_id', user_id)
-    .single();
-
-  if (fetchError || !originalData) {
-    return { error: fetchError?.message ?? 'Subject not found' };
-  }
-
-  const originalDays = originalData.days;
-
   const updatedSubject: Partial<TablesUpdate<'subjects'>> = {
     title: subject.title,
     lessons: subject.lessons,
@@ -52,7 +39,32 @@ export async function updateSubject(
     .single();
 
   if (updateError || !updatedData) {
-    return { error: updateError?.message ?? 'Failed to update subject' };
+    return { error: updateError ? updateError.message : 'Failed to update subject' };
+  }
+
+  const { data: pastEvents, error: fetchPastError } = await supabase
+    .from('events')
+    .select('id, date')
+    .eq('subject_id', subject.id)
+    .eq('user_id', user_id)
+    .lt('date', new Date().toISOString().split('T')[0]);
+
+  if (fetchPastError) {
+    return { error: fetchPastError.message };
+  }
+
+  for (let i = 0; i < pastEvents.length; i++) {
+    const pastEventId = pastEvents[i].id;
+    const numberedTitle = `${subject.title} - ${i + 1}`;
+
+    const { error: updatePastError } = await supabase
+      .from('events')
+      .update({ title: numberedTitle })
+      .eq('id', pastEventId);
+
+    if (updatePastError) {
+      return { error: updatePastError.message };
+    }
   }
 
   const { error: deleteError } = await supabase
@@ -66,9 +78,9 @@ export async function updateSubject(
     return { error: deleteError.message };
   }
 
-  const events: Event[] = generateSubjectEvents(updatedData, originalDays);
+  const events: Event[] = generateSubjectEvents(updatedData, pastEvents.length);
 
   const { error: insertError } = await supabase.from('events').insert(events);
 
-  return { error: insertError?.message ?? null };
+  return { error: insertError ? insertError.message : null };
 }

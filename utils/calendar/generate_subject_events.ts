@@ -6,7 +6,6 @@ type Event = Tables<"events">;
 function isValidLessonDay(
   date: Date,
   subject: Subject,
-  days: number[] = subject.days
 ): boolean {
   const formattedDate = date.toDateString();
   const dayOfWeek = date.getDay() - 1;
@@ -15,29 +14,18 @@ function isValidLessonDay(
   return (
     dayOfWeek >= 0 &&
     dayOfWeek < 5 &&
-    days[dayOfWeek] === 1 &&
+    subject.days[dayOfWeek] === 1 &&
     !skippedDays.has(formattedDate)
   );
 }
 
 export function generateSubjectEvents(
   subject: Subject,
-  originalDays: number[] = subject.days
+  pastEventsCount: number = 0
 ): Event[] {
   const today = new Date();
   const startDate = new Date(subject.starting_date);
-  let lessonCount = 0;
-
-  // Count past lessons
-  if (startDate < today) {
-    let checkDate = new Date(startDate);
-    while (checkDate < today) {
-      if (isValidLessonDay(checkDate, subject, originalDays)) {
-        lessonCount++;
-      }
-      checkDate.setDate(checkDate.getDate() + 1);
-    }
-  }
+  let lessonCount = pastEventsCount;
 
   const events: Event[] = [];
   let currentDate = new Date(today);
