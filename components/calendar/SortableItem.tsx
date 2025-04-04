@@ -4,8 +4,7 @@ import React, { useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
-import { createClient } from "@/utils/supabase/client";
-import { deleteEvent } from "@/utils/calendar/events/delete_event"
+import { makeAuthenticatedRequest } from '@/utils/api';
 
 interface ItemProps {
   id: string;
@@ -54,8 +53,18 @@ export function Item({ id, content, date, refreshData, isSubjectEvent = false, i
 
   const handleDeleteClick = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    const supabase = await createClient();
-    await deleteEvent(supabase, id, date);
+
+    try {
+      await makeAuthenticatedRequest('/api/calendar/delete_event', {
+        method: 'POST',
+        body: JSON.stringify({
+          event_id: id
+        })
+      });
+    } catch (error) {
+      console.error('Error deleting event:', error);
+    }
+
     refreshData();
   };
 

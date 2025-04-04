@@ -18,14 +18,12 @@ function isValidLessonDay(
 
 export function generateSubjectEvents(
   subject: Subject,
-  pastEventsCount: number = 0
+  pastEventsCount: number = 0,
 ): Event[] {
-  const today = new Date();
-  const startDate = new Date(subject.starting_date);
   let lessonCount = pastEventsCount;
 
   const events: Event[] = [];
-  let currentDate = new Date(today);
+  let currentDate = new Date();
 
   while (lessonCount < (subject.lessons || 0)) {
     if (isValidLessonDay(currentDate, subject)) {

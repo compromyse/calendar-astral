@@ -4,13 +4,14 @@ import { Tables, TablesUpdate } from "@/lib/database.types";
 
 export async function deleteEvent(
   supabase: SupabaseClient,
-  event_id: string,
-  date: string
+  user_id: string,
+  event_id: string
 ): Promise<boolean | { error: string }> {
   let { data: eventData, error: eventError } = await supabase
     .from("events")
     .select("*")
     .eq("id", event_id)
+    .eq("user_id", user_id)
     .single();
 
   if (eventError || !eventData) {
@@ -41,7 +42,7 @@ export async function deleteEvent(
   let subject: Tables<"subjects"> = subjectData;
 
   let updatedSubject: TablesUpdate<"subjects"> = {
-    skipped_days: [...(subject.skipped_days || []), date],
+    skipped_days: [...(subject.skipped_days || []), event.date],
   };
 
   let { data: updatedData, error: updateError } = await supabase
