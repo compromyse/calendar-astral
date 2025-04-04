@@ -6,7 +6,7 @@ export async function deleteEvent(
   supabase: SupabaseClient,
   user_id: string,
   event_id: string
-): Promise<boolean | { error: string }> {
+): Promise<{ error: string | null }> {
   let { data: eventData, error: eventError } = await supabase
     .from("events")
     .select("*")
@@ -26,7 +26,7 @@ export async function deleteEvent(
       .delete()
       .eq("id", event_id);
 
-    return deleteError ? { error: deleteError.message } : true;
+    return { error: deleteError? deleteError.message : null } ;
   }
 
   let { data: subjectData, error: subjectError } = await supabase
@@ -42,7 +42,7 @@ export async function deleteEvent(
   let subject: Tables<"subjects"> = subjectData;
 
   let updatedSubject: TablesUpdate<"subjects"> = {
-    skipped_days: [...(subject.skipped_days || []), event.date],
+    skipped_days: [...(subject.skipped_days || []), event.date as string],
   };
 
   let { data: updatedData, error: updateError } = await supabase
@@ -70,5 +70,5 @@ export async function deleteEvent(
 
   const { error: insertError } = await supabase.from("events").insert(newEvents);
 
-  return insertError ? { error: insertError.message } : true;
+  return { error: insertError ? insertError.message : null };
 }
