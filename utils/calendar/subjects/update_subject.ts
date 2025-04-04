@@ -42,6 +42,7 @@ export async function updateSubject(
   const updates = pastEvents.map((event, index) => ({
     id: event.id,
     title: `${subject.title} - ${index + 1}`,
+    user_id: user_id
   }));
 
   const { error: updatePastError } = await supabase
@@ -65,7 +66,10 @@ export async function updateSubject(
     return { error: deleteError.message };
   }
 
-  const events: Event[] = generateSubjectEvents(updatedData, pastEvents.length);
+  const events: Event[] = generateSubjectEvents(updatedData, pastEvents.length).map(event => ({
+    ...event,
+    user_id,
+  }));
 
   const { error: insertError } = await supabase
     .from('events')
