@@ -7,7 +7,7 @@ export async function insertNewEvent(
   supabase: SupabaseClient,
   event: EventInsert
 ): Promise<{ data: EventInsert[] | null; error: string | null }> {
-  if (!event.subject_id || !event.user_id || !event.title || !event.date) {
+  if (!event.user_id || !event.title || !event.date) {
     return { data: null, error: 'Missing required event fields' };
   }
 
