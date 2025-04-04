@@ -53,18 +53,19 @@ export async function updateSubject(
     return { error: fetchPastError.message };
   }
 
-  for (let i = 0; i < pastEvents.length; i++) {
-    const pastEventId = pastEvents[i].id;
-    const numberedTitle = `${subject.title} - ${i + 1}`;
+  const updates = pastEvents.map((event, index) => ({
+    id: event.id,
+    title: `${subject.title} - ${index + 1}`,
+  }));
 
-    const { error: updatePastError } = await supabase
-      .from('events')
-      .update({ title: numberedTitle })
-      .eq('id', pastEventId);
+  const { error: updatePastError } = await supabase
+    .from("events")
+    .upsert(updates, {
+      onConflict: ["id"]
+    });
 
-    if (updatePastError) {
-      return { error: updatePastError.message };
-    }
+  if (updatePastError) {
+    return { error: updatePastError.message };
   }
 
   const { error: deleteError } = await supabase
@@ -80,7 +81,9 @@ export async function updateSubject(
 
   const events: Event[] = generateSubjectEvents(updatedData, pastEvents.length);
 
-  const { error: insertError } = await supabase.from('events').insert(events);
+  const { error: insertError } = await supabase
+    .from('events')
+    .insert(events);
 
   return { error: insertError ? insertError.message : null };
 }
