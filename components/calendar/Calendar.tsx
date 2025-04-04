@@ -202,7 +202,6 @@ export default function Calendar({ calendarDays, onPrevious, onNext, refreshData
           [overContainer]: arrayMove(prev.dayContainers[overContainer], activeIndex, overIndex)
         }
       }));
-
     }
 
     setIsLoading(true);
@@ -211,7 +210,8 @@ export default function Calendar({ calendarDays, onPrevious, onNext, refreshData
         method: 'POST',
         body: JSON.stringify({
           event_id: id,
-          new_date: overContainer
+          date: overContainer,
+          order_index: overIndex
         })
       });
     } catch (error) {

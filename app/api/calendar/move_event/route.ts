@@ -15,14 +15,20 @@ export async function POST(request: Request): Promise<Response> {
   try {
     const body = await request.json();
 
-    if (!body.event_id || !body.new_date) {
+    if (!body.event_id || !body.date || !body.order_index) {
       return Response.json(
-        { error: "Missing required fields: event_id, new_date" },
+        { error: "Missing required fields: event_id, date, order_index" },
         { status: 400 }
       );
     }
 
-    const { error: moveError } = await moveEvent(supabase, user.id, body.event_id, body.new_date);
+    const { error: moveError } = await moveEvent(
+      supabase,
+      user.id,
+      body.event_id,
+      body.date,
+      body.order_index
+    );
 
     if (moveError) {
       return Response.json({ error: moveError }, { status: 500 });

@@ -5,7 +5,8 @@ export async function moveEvent(
   supabase: SupabaseClient,
   user_id: string,
   event_id: string,
-  new_date: string
+  date: string,
+  order_index: number
 ): Promise<{ error: string | null }> {
   const { data, error } = await supabase
     .from('events')
@@ -24,7 +25,7 @@ export async function moveEvent(
 
   const { error: updateError } = await supabase
     .from('events')
-    .update({ date: new_date })
+    .update({ date: date, order_index: order_index })
     .eq('id', event_id)
     .eq('user_id', user_id);
 
