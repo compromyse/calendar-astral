@@ -102,7 +102,6 @@ export default function EditSubjectForm({ title, refreshData }: EditSubjectFormP
       if (!response.ok) throw new Error(result.error || "Failed to update subject");
 
       refreshData();
-      console.log("Subject updated successfully!", result.data);
     } catch (error) {
       console.error("Error updating subject:", error);
     }
