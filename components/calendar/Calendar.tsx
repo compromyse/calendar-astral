@@ -88,7 +88,7 @@ export default function Calendar({ calendarDays, onPrevious, onNext, refreshData
 
   // Event can be moved & deleted
   const eventCanBeTouched = (id: string) => {
-    return new days.allEvents[id]?.canBeTouched;
+    return days.allEvents[id]?.canBeTouched;
   };
 
   // Helper function to find which container an item belongs to
