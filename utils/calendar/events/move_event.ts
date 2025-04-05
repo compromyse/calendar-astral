@@ -8,7 +8,7 @@ export async function moveEvent(
   date: string,
   order_index: number
 ): Promise<{ error: string | null }> {
-  if (date < new Date())
+  if (new Date(date) < new Date())
     return { error: 'Cannot move an event to a date that has already passed' };
 
   const { data, error } = await supabase
