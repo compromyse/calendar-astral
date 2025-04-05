@@ -34,7 +34,7 @@ export function Item({ id, content, date, refreshData, canBeTouched, isDragOverl
     transition: "all 0.2s ease",
     boxShadow: "0 1px 2px rgba(0, 0, 0, 0.05)",
     position: "relative" as const,
-    cursor: canBeTouched ? 'pointer' : 'not-allowed'
+    cursor: canBeTouched ? 'pointer' : 'default'
   };
 
   const deleteIconStyle = {
