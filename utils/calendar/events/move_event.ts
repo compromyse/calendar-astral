@@ -8,6 +8,9 @@ export async function moveEvent(
   date: string,
   order_index: number
 ): Promise<{ error: string | null }> {
+  if (date < new Date())
+    return { error: 'Cannot move an event to a date that has already passed' };
+
   const { data, error } = await supabase
     .from('events')
     .select('subject_id')
@@ -19,9 +22,8 @@ export async function moveEvent(
     return { error: error ? error.message : 'Event not found' };
   }
 
-  if (data.subject_id !== null) {
-    return { error: 'Cannot move a subject event' };
-  }
+  if (data.date < new Date())
+    return { error: 'Cannot move an event that has already occured' };
 
   const { error: updateError } = await supabase
     .from('events')

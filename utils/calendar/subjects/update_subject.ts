@@ -17,11 +17,13 @@ export async function updateSubject(
   };
 
   /* Update the subject */
-  const { error: updateError } = await supabase
+  const { data: updatedData, error: updateError } = await supabase
     .from('subjects')
     .update(updatedSubject)
     .eq('id', subject.id)
-    .eq('user_id', user_id);
+    .eq('user_id', user_id)
+    .select()
+    .single();
 
   if (updateError)
     return { error: updateError ? updateError.message : 'Failed to update subject' };
@@ -64,7 +66,7 @@ export async function updateSubject(
     return { error: deleteError.message };
 
   /* Insert new updated events */
-  const events: Event[] = generateSubjectEvents(subject, pastEvents.length).map(event => ({
+  const events: Event[] = generateSubjectEvents(updatedData, pastEvents.length).map(event => ({
     ...event,
     user_id
   }));

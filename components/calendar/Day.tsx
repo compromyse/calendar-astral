@@ -13,11 +13,11 @@ interface DayProps {
   items: string[];
   title?: string;
   getItemContent?: (id: string) => string | undefined;
-  eventIsSubjectEvent: (id: string) => boolean | undefined;
+  eventCanBeTouched: (id: string) => boolean | undefined;
   refreshData: () => void;
 }
 
-export default function Day({ id, items, title, refreshData, getItemContent, eventIsSubjectEvent }: DayProps) {
+export default function Day({ id, items, title, refreshData, getItemContent, eventCanBeTouched }: DayProps) {
   const { setNodeRef } = useDroppable({
     id
   });
@@ -67,7 +67,7 @@ export default function Day({ id, items, title, refreshData, getItemContent, eve
               date={id}
               refreshData={refreshData}
               content={getItemContent ? getItemContent(item_id) : undefined}
-              isSubjectEvent={eventIsSubjectEvent(item_id)}
+              canBeTouched={eventCanBeTouched(item_id)}
             />
           ))}
         </div>

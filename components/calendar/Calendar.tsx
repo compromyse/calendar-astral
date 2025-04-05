@@ -86,8 +86,9 @@ export default function Calendar({ calendarDays, onPrevious, onNext, refreshData
     return days.allEvents[id]?.title;
   };
 
-  const eventIsSubjectEvent = (id: string) => {
-    return days.allEvents[id]?.subject_id !== null;
+  // Event can be moved & deleted
+  const eventCanBeTouched = (id: string) => {
+    return new Date(days.allEvents[id]?.date) >= new Date();
   };
 
   // Helper function to find which container an item belongs to
@@ -243,7 +244,7 @@ export default function Calendar({ calendarDays, onPrevious, onNext, refreshData
               items={days.dayContainers[dateKey]} 
               title={getDayTitle(dateKey)}
               getItemContent={getEventContent}
-              eventIsSubjectEvent={eventIsSubjectEvent}
+              eventCanBeTouched={eventCanBeTouched}
               refreshData={refreshData}
             />
           ))}

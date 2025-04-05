@@ -9,13 +9,13 @@ import { makeAuthenticatedRequest } from '@/utils/api';
 interface ItemProps {
   id: string;
   date: string;
-  isSubjectEvent?: boolean,
+  canBeTouched?: boolean,
   content?: string;
   isDragOverlay?: boolean;
   refreshData: () => void;
 }
 
-export function Item({ id, content, date, refreshData, isSubjectEvent = false, isDragOverlay = false }: ItemProps) {
+export function Item({ id, content, date, refreshData, canBeTouched, isDragOverlay = false }: ItemProps) {
   const [isHovered, setIsHovered] = useState(false);
   
   const itemStyle = {
@@ -34,7 +34,7 @@ export function Item({ id, content, date, refreshData, isSubjectEvent = false, i
     transition: "all 0.2s ease",
     boxShadow: "0 1px 2px rgba(0, 0, 0, 0.05)",
     position: "relative" as const,
-    cursor: isSubjectEvent ? 'not-allowed' : 'pointer'
+    cursor: canBeTouched ? 'pointer' : 'not-allowed'
   };
 
   const deleteIconStyle = {
@@ -77,18 +77,18 @@ export function Item({ id, content, date, refreshData, isSubjectEvent = false, i
       <div>
         {content || `Event ${id}`}
       </div>
-      <div style={deleteIconStyle} onPointerDown={(e) => e.stopPropagation()} onClick={handleDeleteClick}>
+      { canBeTouched && (<div style={deleteIconStyle} onPointerDown={(e) => e.stopPropagation()} onClick={handleDeleteClick}>
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M3 6h18"></path>
           <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
           <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
         </svg>
-      </div>
+      </div> )}
     </div>
   );
 }
 
-export default function SortableItem({ id, content, date, refreshData, isSubjectEvent = false }: ItemProps) {
+export default function SortableItem({ id, content, date, refreshData, canBeTouched = true }: ItemProps) {
   const {
     attributes,
     listeners,
@@ -96,7 +96,7 @@ export default function SortableItem({ id, content, date, refreshData, isSubject
     transform,
     transition,
     isDragging
-  } = useSortable({ id, disabled: isSubjectEvent });
+  } = useSortable({ id, disabled: !canBeTouched });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -107,7 +107,7 @@ export default function SortableItem({ id, content, date, refreshData, isSubject
 
   return (
     <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      <Item id={id} content={content} date={date} refreshData={refreshData} isSubjectEvent={isSubjectEvent} />
+      <Item id={id} content={content} date={date} refreshData={refreshData} canBeTouched={canBeTouched} />
     </div>
   );
 } 
