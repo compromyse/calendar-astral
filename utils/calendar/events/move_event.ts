@@ -11,14 +11,12 @@ export async function moveEvent(
   if (new Date(date) < new Date())
     return { error: 'Cannot move an event to a date that has already passed' };
 
-  const { data: eventData, error } = await supabase
+  const { data: event, error } = await supabase
     .from('events')
-    .select('subject_id')
+    .select('date')
     .eq('id', event_id)
     .eq('user_id', user_id)
     .single();
-
-  const event: Event = eventData as Event;
 
   if (error || !event.date) {
     return { error: error ? error.message : 'Event not found' };
