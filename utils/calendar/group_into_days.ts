@@ -32,7 +32,7 @@ export function groupIntoDays(events: Event[], weekStart: Date): CalendarDay[] {
     grouped[eventDateKey].events.push({
       id: event.id,
       title: event.title,
-      canBeTouched: new Date(event.date) >= new Date()
+      date: event.date
     });
   });
 

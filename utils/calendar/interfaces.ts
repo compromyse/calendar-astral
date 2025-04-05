@@ -7,7 +7,7 @@ interface CalendarDay {
   dateKey: string;
   date: string;
   title: string;
-  events: Pick<Event, 'id' | 'title' | 'subject_id'>[];
+  events: Pick<Event, 'id' | 'title' | 'date'>[];
 }
 
 export type { Event, CalendarDay, Subject  }
