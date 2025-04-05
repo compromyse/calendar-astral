@@ -14,30 +14,31 @@ export async function POST(request: Request): Promise<Response> {
     throw new Error("User is null");
   }
 
+  let body;
   try {
-    const body = await request.json();
-
-    if (!body.event_id || !body.date || !body.order_index) {
-      return Response.json(
-        { error: "Missing required fields: event_id, date, order_index" },
-        { status: 400 }
-      );
-    }
-
-    const { error: moveError } = await moveEvent(
-      supabase,
-      user.id,
-      body.event_id,
-      body.date,
-      body.order_index
-    );
-
-    if (moveError) {
-      return Response.json({ error: moveError }, { status: 500 });
-    }
-
-    return Response.json({ message: "Event moved successfully" }, { status: 200 });
+    body = await request.json();
   } catch (parseError) {
     return Response.json({ error: "Invalid JSON body" }, { status: 400 });
   }
+
+  if (!body.event_id || !body.date || typeof(body.order_index) !== 'number') {
+    return Response.json(
+      { error: "Missing required fields: event_id, date, order_index" },
+      { status: 400 }
+    );
+  }
+
+  const { error: moveError } = await moveEvent(
+    supabase,
+    user.id,
+    body.event_id,
+    body.date,
+    body.order_index
+  );
+
+  if (moveError) {
+    return Response.json({ error: moveError }, { status: 500 });
+  }
+
+  return Response.json({ message: "Event moved successfully" }, { status: 200 });
 }
