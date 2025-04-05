@@ -14,31 +14,24 @@ export async function POST(request: Request): Promise<Response> {
     throw new Error("User is null");
   }
 
+  let body;
   try {
-    const body = await request.json();
-
-    if (
-      !body.title ||
-      !body.numberOfLessons ||
-      !Array.isArray(body.weeklySchedule)
-    ) {
-      return Response.json({ error: "Missing or invalid required fields: title, numberOfLessons, weeklySchedule" }, { status: 400 });
-    }
-
-    const { data, error: insertError } = await insertNewSubject(
-      supabase,
-      user.id,
-      body.title,
-      body.numberOfLessons,
-      body.weeklySchedule
-    );
-
-    if (insertError) {
-      return Response.json({ error: insertError }, { status: 500 });
-    }
-
-    return Response.json({ data });
+    body = await request.json();
   } catch (parseError) {
     return Response.json({ error: "Invalid JSON body" }, { status: 400 });
   }
+
+  const { data, error: insertError } = await insertNewSubject(
+    supabase,
+    user.id,
+    body.title,
+    body.numberOfLessons,
+    body.weeklySchedule
+  );
+
+  if (insertError) {
+    return Response.json({ error: insertError }, { status: 500 });
+  }
+
+  return Response.json({ data });
 }

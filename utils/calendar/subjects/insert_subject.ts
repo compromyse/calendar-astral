@@ -22,19 +22,19 @@ export async function insertNewSubject(
     starting_date: startingDate,
   };
 
-  const { data, error } = await supabase
+  const { data: subjectData, error } = await supabase
     .from('subjects')
     .insert([newSubject])
-    .select();
+    .select()
+    .single();
 
-  if (error || !data || data.length === 0) {
+  if (error || !subjectData) {
     return { data: null, error };
   }
 
-  const subject = data[0];
-  const events: EventInsert[] = generateSubjectEvents(subject);
+  const events: EventInsert[] = generateSubjectEvents(subjectData);
 
   const { error: eventError } = await supabase.from('events').insert(events);
 
-  return { data: subject, error: eventError };
+  return { data: subjectData, error: eventError };
 }

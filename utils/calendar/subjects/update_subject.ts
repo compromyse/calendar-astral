@@ -33,7 +33,7 @@ export async function updateSubject(
     .select('id, date')
     .eq('subject_id', subject.id)
     .eq('user_id', user_id)
-    .lt('date', new Date().toISOString().split('T')[0]);
+    .lt('date', new Date().toDateString());
 
   if (fetchPastError) {
     return { error: fetchPastError.message };
@@ -41,8 +41,7 @@ export async function updateSubject(
 
   const updates = pastEvents.map((event, index) => ({
     id: event.id,
-    title: `${subject.title} - ${index + 1}`,
-    user_id: user_id
+    title: `${subject.title} - ${index + 1}`
   }));
 
   const { error: updatePastError } = await supabase
@@ -60,7 +59,7 @@ export async function updateSubject(
     .delete()
     .eq('subject_id', subject.id)
     .eq('user_id', user_id)
-    .gte('date', new Date().toISOString().split('T')[0]);
+    .gte('date', new Date().toDateString());
 
   if (deleteError) {
     return { error: deleteError.message };
