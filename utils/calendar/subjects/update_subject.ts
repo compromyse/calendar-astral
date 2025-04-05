@@ -64,9 +64,9 @@ export async function updateSubject(
     return { error: deleteError.message };
 
   /* Insert new updated events */
-  const events: Event[] = generateSubjectEvents(updatedSubject, pastEvents.length).map(event => ({
+  const events: Event[] = generateSubjectEvents(subject, pastEvents.length).map(event => ({
     ...event,
-    user_id,
+    user_id
   }));
 
   const { error: insertError } = await supabase.from('events').insert(events);
