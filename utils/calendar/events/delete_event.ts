@@ -56,7 +56,17 @@ export async function deleteEvent(
     return { error: updateError.message };
   }
 
-  const newEvents = generateSubjectEvents(updatedData);
+  const { data: pastEvents, error: fetchPastError } = await supabase
+    .from('events')
+    .select('id, date')
+    .eq('subject_id', subject.id)
+    .eq('user_id', user_id)
+    .lt('date', new Date().toDateString());
+
+  if (fetchPastError)
+    return { error: fetchPastError.message };
+
+  const newEvents = generateSubjectEvents(updatedData, pastEvents.length || 0);
 
   const { error: deleteSubjectEventsError } = await supabase
     .from("events")

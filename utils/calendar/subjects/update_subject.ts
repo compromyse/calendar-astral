@@ -16,18 +16,17 @@ export async function updateSubject(
     starting_date: subject.starting_date,
   };
 
-  const { data: updatedData, error: updateError } = await supabase
+  /* Update the subject */
+  const { error: updateError } = await supabase
     .from('subjects')
     .update(updatedSubject)
     .eq('id', subject.id)
-    .eq('user_id', user_id)
-    .select()
-    .single();
+    .eq('user_id', user_id);
 
-  if (updateError || !updatedData) {
+  if (updateError)
     return { error: updateError ? updateError.message : 'Failed to update subject' };
-  }
 
+  /* Fetch past events */
   const { data: pastEvents, error: fetchPastError } = await supabase
     .from('events')
     .select('id, date')
@@ -35,10 +34,10 @@ export async function updateSubject(
     .eq('user_id', user_id)
     .lt('date', new Date().toDateString());
 
-  if (fetchPastError) {
+  if (fetchPastError)
     return { error: fetchPastError.message };
-  }
 
+  /* Update past events titles */
   const updates = pastEvents.map((event, index) => ({
     id: event.id,
     title: `${subject.title} - ${index + 1}`
@@ -50,10 +49,10 @@ export async function updateSubject(
       onConflict: "id"
     });
 
-  if (updatePastError) {
+  if (updatePastError)
     return { error: updatePastError.message };
-  }
 
+  /* Delete upcoming events */
   const { error: deleteError } = await supabase
     .from('events')
     .delete()
@@ -61,11 +60,11 @@ export async function updateSubject(
     .eq('user_id', user_id)
     .gte('date', new Date().toDateString());
 
-  if (deleteError) {
+  if (deleteError)
     return { error: deleteError.message };
-  }
 
-  const events: Event[] = generateSubjectEvents(updatedData, pastEvents.length).map(event => ({
+  /* Insert new updated events */
+  const events: Event[] = generateSubjectEvents(updatedSubject, pastEvents.length).map(event => ({
     ...event,
     user_id,
   }));
