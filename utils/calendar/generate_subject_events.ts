@@ -1,3 +1,4 @@
+import { TablesInsert } from '@/lib/database.types';
 import { Subject, Event } from '@/utils/calendar/interfaces'
 
 function isValidLessonDay(
@@ -27,7 +28,7 @@ export function generateSubjectEvents(
 
   while (lessonCount < (subject.lessons || 0)) {
     if (isValidLessonDay(currentDate, subject)) {
-      let event: Partial<Event> = {
+      let event: TablesInsert<'events'> = {
         subject_id: subject.id,
         user_id: subject.user_id,
         title: `${subject.title} - ${lessonCount + 1}`,

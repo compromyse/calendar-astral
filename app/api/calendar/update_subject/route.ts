@@ -4,7 +4,7 @@ import { createClient } from '@/utils/supabase/server';
 import { authenticateRequest } from '@/utils/auth';
 import { updateSubject } from '@/utils/calendar/subjects/update_subject';
 
-import { Subject } from '@/utils/calendar/interfaces'
+import { TablesUpdate } from "@/lib/database.types";
 
 export async function POST(request: Request): Promise<Response> {
   const supabase = await createClient();
@@ -35,7 +35,7 @@ export async function POST(request: Request): Promise<Response> {
     );
   }
 
-  const newSubject: Partial<Subject> = {
+  const newSubject: TablesUpdate<"subjects"> = {
     id: body.subject_id,
     title: body.title,
     lessons: body.numberOfLessons,

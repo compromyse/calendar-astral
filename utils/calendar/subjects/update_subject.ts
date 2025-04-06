@@ -1,15 +1,15 @@
 import { SupabaseClient } from '@supabase/supabase-js';
 import { generateSubjectEvents } from '@/utils/calendar/generate_subject_events';
-import { TablesUpdate, Tables } from '@/lib/database.types';
+import { TablesUpdate } from '@/lib/database.types';
 
-import { Subject, Event } from '@/utils/calendar/interfaces'
+import { Event } from '@/utils/calendar/interfaces'
 
 export async function updateSubject(
   supabase: SupabaseClient,
   user_id: string,
-  subject: Partial<Subject>
+  subject: TablesUpdate<'subjects'>
 ): Promise<{ error: string | null }> {
-  const updatedSubject: Partial<TablesUpdate<'subjects'>> = {
+  const updatedSubject: TablesUpdate<'subjects'> = {
     title: subject.title,
     lessons: subject.lessons,
     days: subject.days,
