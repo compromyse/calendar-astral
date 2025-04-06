@@ -22,7 +22,7 @@ export default function EditSubjectForm({ title, refreshData }: EditSubjectFormP
   const [subjectTitle, setSubjectTitle] = useState('');
   const [numberOfLessons, setNumberOfLessons] = useState(1);
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
-  const [subjects, setSubjects] = useState<Partial<Subject>[]>([]);
+  const [subjects, setSubjects] = useState<Subject[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -111,7 +111,7 @@ export default function EditSubjectForm({ title, refreshData }: EditSubjectFormP
 
   if (!showForm) {
     return (
-      <div 
+      <div
         className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 cursor-pointer hover:shadow-md transition-shadow"
         onClick={() => setShowForm(true)}
       >
@@ -126,7 +126,7 @@ export default function EditSubjectForm({ title, refreshData }: EditSubjectFormP
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{title}</h2>
-        <button 
+        <button
           onClick={() => setShowForm(false)}
           className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
         >
@@ -137,7 +137,7 @@ export default function EditSubjectForm({ title, refreshData }: EditSubjectFormP
       <div className={`absolute inset-0 bg-black/20 flex items-center justify-center rounded-lg z-10 ${isLoading ? 'block' : 'hidden'}`}>
         <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
       </div>
-      
+
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
           <label htmlFor="subject-selection" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -158,7 +158,7 @@ export default function EditSubjectForm({ title, refreshData }: EditSubjectFormP
             ))}
           </select>
         </div>
-        
+
         <div>
           <label htmlFor="subject-title" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Subject Title
@@ -173,7 +173,7 @@ export default function EditSubjectForm({ title, refreshData }: EditSubjectFormP
             required
           />
         </div>
-        
+
         <div>
           <label htmlFor="number-of-lessons" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Number of Lessons
@@ -188,7 +188,7 @@ export default function EditSubjectForm({ title, refreshData }: EditSubjectFormP
             required
           />
         </div>
-        
+
         <div>
           <p className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
             Days of Week
@@ -201,8 +201,8 @@ export default function EditSubjectForm({ title, refreshData }: EditSubjectFormP
                   onClick={() => handleDayToggle(day.id)}
                   className={`
                     w-12 h-12 rounded-full flex items-center justify-center text-sm font-medium transition-colors
-                    ${selectedDays.includes(day.id) 
-                      ? 'bg-blue-600 text-white' 
+                    ${selectedDays.includes(day.id)
+                      ? 'bg-blue-600 text-white'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'}
                   `}
                 >
@@ -212,9 +212,9 @@ export default function EditSubjectForm({ title, refreshData }: EditSubjectFormP
             ))}
           </div>
         </div>
-        
+
         <div>
-          <button 
+          <button
             type="submit"
             className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
