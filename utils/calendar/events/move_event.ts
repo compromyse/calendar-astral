@@ -5,7 +5,7 @@ export async function moveEvent(
   user_id: string,
   event_id: string,
   date: string,
-  order_index: number
+  updated_events: string[]
 ): Promise<{ error: string | null }> {
   if (new Date(date) < new Date())
     return { error: 'Cannot move an event to a date that has already passed' };
@@ -24,11 +24,27 @@ export async function moveEvent(
   if (new Date(event.date) < new Date())
     return { error: 'Cannot move an event that has already occured' };
 
-  const { error: updateError } = await supabase
+  const { error: dateUpdateError } = await supabase
     .from('events')
-    .update({ date: date, order_index: order_index })
+    .update({ date: date })
     .eq('id', event_id)
     .eq('user_id', user_id);
 
-  return { error: updateError ? updateError.message : null };
+  if (dateUpdateError)
+    return { error: dateUpdateError ? dateUpdateError.message : null };
+
+  await Promise.all(
+    updated_events.map(async (event_id: string, order_index: number) => {
+      const { error: updateError } = await supabase
+        .from('events')
+        .update({ order_index: order_index })
+        .eq('id', event_id)
+        .eq('user_id', user_id);
+
+      if (updateError)
+        return { error: updateError ? updateError.message : null };
+    })
+  );
+
+  return { error: null };
 }

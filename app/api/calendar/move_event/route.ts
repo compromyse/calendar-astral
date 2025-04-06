@@ -8,11 +8,10 @@ export async function POST(request: Request): Promise<Response> {
   const supabase = await createClient();
   const { user, error, status } = await authenticateRequest(request, supabase);
 
-  if (error) {
+  if (error)
     return Response.json({ error }, { status });
-  } else if (!user) {
+  else if (!user)
     throw new Error("User is null");
-  }
 
   let body;
   try {
@@ -21,24 +20,22 @@ export async function POST(request: Request): Promise<Response> {
     return Response.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
-  if (!body.event_id || !body.date || typeof(body.order_index) !== 'number') {
+  if (!body.event_id || !body.date || !body.updated_events)
     return Response.json(
-      { error: "Missing required fields: event_id, date, order_index" },
+      { error: "Missing required fields: event_id, date, updated_events" },
       { status: 400 }
     );
-  }
 
   const { error: moveError } = await moveEvent(
     supabase,
     user.id,
     body.event_id,
     body.date,
-    body.order_index
+    body.updated_events
   );
 
-  if (moveError) {
+  if (moveError)
     return Response.json({ error: moveError }, { status: 500 });
-  }
 
   return Response.json({ message: "Event moved successfully" }, { status: 200 });
 }
