@@ -202,7 +202,7 @@ export default function Calendar({ calendarDays, onPrevious, onNext, refreshData
         method: 'POST',
         body: JSON.stringify({
           event_id: id,
-          date: new Date(overContainer).toLocaleString('en-CA').split(',')[0],
+          date: overContainer,
           order_index: overIndex
         })
       });

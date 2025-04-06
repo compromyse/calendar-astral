@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 
+import "@/utils/extensions";
+
 // Dynamically import Calendar component with SSR disabled
 const Calendar = dynamic(() => import("@/components/calendar/Calendar"), {
   ssr: false,
@@ -38,7 +40,7 @@ export default function CalendarPage() {
     setLoading(true);
 
     try {
-      const response = await makeAuthenticatedRequest(`/api/calendar/fetch_week?weekStart=${weekStart.toISOString().split('T')[0]}`);
+      const response = await makeAuthenticatedRequest(`/api/calendar/fetch_week?weekStart=${weekStart.toDateString()}`);
       if (!response.ok) throw new Error("Failed to fetch data");
 
       const result = await response.json();
