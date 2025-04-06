@@ -8,7 +8,7 @@ export async function GET(request: Request): Promise<Response> {
   const supabase = await createClient();
 
   const { user, error, status } = await authenticateRequest(request, supabase);
-  
+
   if (error) {
     return Response.json({ error }, { status });
   } else if (!user) {
@@ -16,10 +16,11 @@ export async function GET(request: Request): Promise<Response> {
   }
 
   const url = new URL(request.url);
-  const weekStartParam = url.searchParams.get('weekStart');
+  const weekStart = url.searchParams.get('weekStart');
 
-  const weekStart = weekStartParam ? new Date(weekStartParam) : new Date();
-  
+  if (!weekStart)
+    return Response.json({ error: 'Fetching events requires a date' }, { status: 500 });
+
   const { data, error: fetchError } = await fetchEvents(supabase, user.id, weekStart);
 
   if (fetchError) {

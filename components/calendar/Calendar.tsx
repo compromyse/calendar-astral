@@ -51,7 +51,7 @@ export default function Calendar({ calendarDays, onPrevious, onNext, refreshData
     const events: { [key: string]: any } = {};
     const dates: { [key: string]: Date } = {};
     const titles: { [key: string]: string } = {};
-    
+
     // Initialize days and events from calendarDays
     calendarDays.forEach(day => {
       initialDays[day.dateKey] = day.events.map(event => event.id);
@@ -63,10 +63,10 @@ export default function Calendar({ calendarDays, onPrevious, onNext, refreshData
         events[event.id] = event;
       });
     });
-    
+
     return { dayContainers: initialDays, allEvents: events, dates, titles };
   });
-  
+
   const [activeId, setActiveId] = useState<string | null>(null);
 
   const sensors = useSensors(
@@ -109,7 +109,7 @@ export default function Calendar({ calendarDays, onPrevious, onNext, refreshData
 
   function handleDragOver(event: any) {
     const { active, over } = event;
-    
+
     if (!over) return;
 
     const { id } = active;
@@ -129,10 +129,10 @@ export default function Calendar({ calendarDays, onPrevious, onNext, refreshData
 
       // Find the indexes for the items
       const activeIndex = activeItems.indexOf(id);
-      
+
       // Insert at end of over container by default
       let newIndex = overItems.length;
-      
+
       if (overId in prev.allEvents) {
         // If dropping on a specific event, place after it
         const overIndex = overItems.indexOf(overId);
@@ -159,12 +159,12 @@ export default function Calendar({ calendarDays, onPrevious, onNext, refreshData
 
   async function handleDragEnd(event: any) {
     const { active, over } = event;
-    
+
     if (!over) {
       setActiveId(null);
       return;
     }
-    
+
     const { id } = active;
     const { id: overId } = over;
 
@@ -202,7 +202,7 @@ export default function Calendar({ calendarDays, onPrevious, onNext, refreshData
         method: 'POST',
         body: JSON.stringify({
           event_id: id,
-          date: new Date(overContainer).toISOString().split('T')[0],
+          date: new Date(overContainer).toLocaleString('en-CA').split(',')[0],
           order_index: overIndex
         })
       });
@@ -215,14 +215,12 @@ export default function Calendar({ calendarDays, onPrevious, onNext, refreshData
     setActiveId(null);
   }
 
-  const activeEvent = activeId ? days.allEvents[activeId] : null;
-
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">{title}</h1>
         {(onPrevious || onNext) && (
-          <NavigationArrows onPrevious={onPrevious || (() => {})} onNext={onNext || (() => {})} />
+          <NavigationArrows onPrevious={onPrevious || (() => { })} onNext={onNext || (() => { })} />
         )}
       </div>
       <div style={wrapperStyle}>
@@ -238,10 +236,10 @@ export default function Calendar({ calendarDays, onPrevious, onNext, refreshData
           onDragEnd={handleDragEnd}
         >
           {Object.keys(days.dayContainers).map((dateKey) => (
-            <Day 
-              key={dateKey} 
-              id={dateKey} 
-              items={days.dayContainers[dateKey]} 
+            <Day
+              key={dateKey}
+              id={dateKey}
+              items={days.dayContainers[dateKey]}
               title={getDayTitle(dateKey)}
               getItemContent={getEventContent}
               eventCanBeTouched={eventCanBeTouched}

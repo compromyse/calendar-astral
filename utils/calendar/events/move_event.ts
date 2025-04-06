@@ -1,5 +1,4 @@
 import { SupabaseClient } from '@supabase/supabase-js';
-import { Event } from '@/utils/calendar/interfaces';
 
 export async function moveEvent(
   supabase: SupabaseClient,
