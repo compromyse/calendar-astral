@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import {
   DndContext,
-  DragOverlay,
   closestCorners,
   KeyboardSensor,
   PointerSensor,
@@ -13,10 +12,10 @@ import {
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 
 import Day from "./Day";
-import { Item } from "./SortableItem";
 import NavigationArrows from "./NavigationArrows";
 
 import { makeAuthenticatedRequest } from '@/utils/api';
+import { generateEventMovementArray } from '@/utils/calendar/generate_event_movement_array';
 
 import { CalendarDay } from '@/utils/calendar/interfaces'
 
@@ -197,13 +196,15 @@ export default function Calendar({ calendarDays, onPrevious, onNext, refreshData
     }
 
     setIsLoading(true);
+
+    const updatedArray: string[] = generateEventMovementArray(days.dayContainers[overContainer], active.id, overIndex);
     try {
       await makeAuthenticatedRequest('/api/calendar/move_event', {
         method: 'POST',
         body: JSON.stringify({
           event_id: id,
           date: overContainer,
-          order_index: overIndex
+          updated_events: updatedArray
         })
       });
     } catch (error) {
