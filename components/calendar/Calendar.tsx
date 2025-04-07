@@ -87,7 +87,7 @@ export default function Calendar({ calendarDays, onPrevious, onNext, refreshData
 
   // Event can be moved & deleted
   const eventCanBeTouched = (id: string) => {
-    let date: Date = days.allEvents[id]?.date;
+    let date: Date = new Date(days.allEvents[id]?.date);
     date.setHours(23, 59, 59, 999);
     return date >= new Date();
   };
