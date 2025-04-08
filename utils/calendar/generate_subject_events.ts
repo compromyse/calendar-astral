@@ -32,7 +32,7 @@ export function generateSubjectEvents(
         subject_id: subject.id,
         user_id: subject.user_id,
         title: `${subject.title} - ${lessonCount + 1}`,
-        date: currentDate.toDateString(),
+        date: currentDate.toDateString()
       };
 
       events.push(event as Event);
